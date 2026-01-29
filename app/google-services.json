@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1083393579877",
+    "firebase_url": "https://prjkakuro-9d95d-default-rtdb.firebaseio.com",
+    "project_id": "prjkakuro-9d95d",
+    "storage_bucket": "prjkakuro-9d95d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083393579877:android:20d92a548cbc81be9f1f8c",
+        "android_client_info": {
+          "package_name": "com.example.prjkakuro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbInH616HnicDB1ebPLpVO7RM_GCw7RLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StartActivity">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kakuro Master"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="40dp"/>
+
+        <Button android:id="@+id/btnGoToLogin" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Login" />
+        <Button android:id="@+id/btnGoToRegister" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Register" android:layout_marginTop="8dp"/>
+        <TextView android:id="@+id/btnStartGuest" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Play as Guest" android:textSize="18sp" android:layout_marginTop="24dp" android:clickable="true" android:focusable="true"/>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
