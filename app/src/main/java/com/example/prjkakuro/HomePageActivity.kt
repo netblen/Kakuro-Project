@@ -27,9 +27,9 @@ class HomePageActivity : AppCompatActivity() {
             else -> tvWelcome.text = "Welcome back, $user!"
         }
 
-        findViewById<Button>(R.id.btnEasy).setOnClickListener { startGame(5) }
-        findViewById<Button>(R.id.btnMedium).setOnClickListener { startGame(7) }
-        findViewById<Button>(R.id.btnHard).setOnClickListener { startGame(10) }
+        findViewById<Button>(R.id.btnEasy).setOnClickListener { showLevelSelection(5) }
+        findViewById<Button>(R.id.btnMedium).setOnClickListener { showLevelSelection(9) }
+        findViewById<Button>(R.id.btnHard).setOnClickListener { showLevelSelection(13) }
 
 
 
@@ -49,16 +49,10 @@ class HomePageActivity : AppCompatActivity() {
         }
     }
 
-    private fun startGame(size: Int) {
-        val isGuest = intent.getBooleanExtra("IS_GUEST", false)
-        val limit = if (isGuest) 3 else 5 //guest story 1 limits but not sure about the logic here if that alr//
 
-        if (gameCount >= limit) {
-            val msg = if (isGuest) "Guest limit reached! Register for more." else "Game limit reached!"
-            Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
-            return
-        }
-        gameCount++
-        Toast.makeText(this, "Game $gameCount of $limit started", Toast.LENGTH_SHORT).show()
+    private fun showLevelSelection(size: Int) {
+        val intent = Intent(this, LevelSelectionActivity::class.java)
+        intent.putExtra("GRID_SIZE", size)
+        startActivity(intent)
     }
 }

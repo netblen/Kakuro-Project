@@ -13,7 +13,7 @@
 
         <TextView android:id="@+id/tvWelcome" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="24sp" android:layout_marginBottom="32dp"/>
         <Button android:id="@+id/btnEasy" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Easy (5x5)" />
-        <Button android:id="@+id/btnMedium" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Medium (7x7)" android:layout_marginTop="8dp"/>
+        <Button android:id="@+id/btnMedium" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Medium (9x8)" android:layout_marginTop="8dp"/>
         <Button android:id="@+id/btnHard" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Hard (10x10)" android:layout_marginTop="8dp"/>
 
         <TextView

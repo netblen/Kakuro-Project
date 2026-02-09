@@ -1,31 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:padding="16dp">
 
     <TextView
         android:id="@+id/tvTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:text="Time: 00:00"
-        android:textSize="20sp"
-        android:layout_marginBottom="20dp"/>
+        android:textSize="20sp" />
 
-    <GridLayout
+    <LinearLayout
+        android:id="@+id/buttons_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTimer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnUndo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Undo" />
+
+        <Button
+            android:id="@+id/btnRedo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Redo" />
+    </LinearLayout>
+
+    <androidx.gridlayout.widget.GridLayout
         android:id="@+id/kakuroGrid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/buttons_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:background="#000000"
         android:padding="2dp" />
+
+    <LinearLayout
+        android:id="@+id/keypad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button android:id="@+id/btnNum1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1" />
+            <Button android:id="@+id/btnNum2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="2" />
+            <Button android:id="@+id/btnNum3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3" />
+            <Button android:id="@+id/btnNum4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="4" />
+            <Button android:id="@+id/btnNum5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <Button android:id="@+id/btnNum6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="6" />
+            <Button android:id="@+id/btnNum7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="7" />
+            <Button android:id="@+id/btnNum8" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="8" />
+            <Button android:id="@+id/btnNum9" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="9" />
+            <Button android:id="@+id/btnDelete" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="X" />
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnHint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Use Hint"
-        android:layout_marginTop="20dp"/>
+        android:layout_above="@id/keypad"
+        android:layout_centerHorizontal="true"
+        android:text="Use Hint" />
 
-</LinearLayout>
+</RelativeLayout>

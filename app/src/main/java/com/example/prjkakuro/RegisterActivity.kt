@@ -30,7 +30,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             //Checks if the username exists in the users collection of the db
-            //if not found, it creates a new account otherwise it shows a error
+            //if not found, it creates a new account if not created will shows a error
             FirebaseFirestore.getInstance().collection("Users")
                 .whereEqualTo("username", user).get()
                 .addOnSuccessListener { docs ->
