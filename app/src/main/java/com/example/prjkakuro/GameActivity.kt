@@ -24,6 +24,9 @@ class GameActivity : AppCompatActivity() {
     private var selectedCell: EditText? = null
 
 
+
+     // MARK:  Initializes the activity, sets up the game board, and keypad listeners.
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -46,6 +49,8 @@ class GameActivity : AppCompatActivity() {
         renderBoard()
     }
 
+    /**  aets up the listeners for the cells where user puts numbers and for my delete button(the button next to the nine**/
+    // TODO: remeber to fix the delete button
     private fun setupKeypad() {
         val keypadIds = listOf(
             R.id.btnNum1, R.id.btnNum2, R.id.btnNum3, R.id.btnNum4, R.id.btnNum5,
@@ -59,7 +64,10 @@ class GameActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnDelete).setOnClickListener { onDeleteClick() }
     }
 
-    //fixear esto que cuando uso el teclado no sale lo verde
+
+    /**  Handles the clicks on the number cells
+     * updatie the selected cell value with the number
+     **/
     private fun onNumberClick(number: Int) {
         selectedCell?.let {
 
@@ -79,6 +87,8 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    /**handles clicks on the delete button,
+     *  clears the selected cell number **/
     private fun onDeleteClick() {
         selectedCell?.let {
             val numCols = board[0].size
@@ -96,13 +106,13 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-
+    /**save a move to the undos so when the undo is click the move they just did is undon */
     private fun recordMove(row: Int, col: Int, oldValue: Int, newValue: Int) {
         undoStack.addLast(Move(row, col, oldValue, newValue))
         redoStack.clear()
     }
 
-    //not done yet, theres a mistake about the computer keybosrd
+    /**undo the last move */
     private fun undo() {
         if (undoStack.isNotEmpty()) {
             val move = undoStack.removeLast()
@@ -111,7 +121,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    //sam here
+    /**redoe the last undo move*/
     private fun redo() {
         if (redoStack.isNotEmpty()) {
             val move = redoStack.removeLast()
@@ -120,6 +130,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    /**applies a move to the board and updates the grid(related tp the undo and redo buton*/
     private fun applyMove(row: Int, col: Int, value: Int) {
         board[row][col].currentValue = value
 
@@ -132,6 +143,7 @@ class GameActivity : AppCompatActivity() {
         updateCellViews()
     }
 
+    /**initializes the game board based on the grid size chosen*/
     private fun setupBoard() {
         when (gridSize) {
             5 -> setup5x5Board()
@@ -214,16 +226,16 @@ class GameActivity : AppCompatActivity() {
             Array(5) { column ->
                 val value = rawBoard[row][column]
                 when (value) {
-                    0 -> KakuroCell(isWhiteCell = true)
-                    -1 -> KakuroCell(isWhiteCell = false)
+                    0 -> KakuroCell(isWhiteCell = true) //user imput will be avaible to put the number
+                    -1 -> KakuroCell(isWhiteCell = false) //cell will be unavaible so the user cant put a number
+
 
 
                     else -> if (level == 1 && value in 1..9 && (column > 0 && row > 0)) {
-                        KakuroCell(isWhiteCell = true, currentValue = value)
+                        KakuroCell(isWhiteCell = true, currentValue = value) //gets the values from aboce
                     } else {
 
-
-                        val vSum = value / 1000
+                        val vSum = value / 1000 //choseing if its a white cell?
                         val hSum = value % 1000
                         KakuroCell(isWhiteCell = false, verticalSum = vSum, horizontalSum = hSum)
                     }
@@ -361,6 +373,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    //TODO: fix and app will crash cuz imcomplete table
     private fun setup13x13Board() {
         val rawBoard = when (level) {
             1 -> arrayOf(
@@ -492,10 +505,11 @@ class GameActivity : AppCompatActivity() {
     }
 
 
+    /**creates and displays the cells of grid*/
     private fun renderBoard() {
         gridLayout.removeAllViews()
 
-
+    //gets the variables from up
         val numRows = board.size
         val numCols = board[0].size
         gridLayout.rowCount = numRows
@@ -514,17 +528,17 @@ class GameActivity : AppCompatActivity() {
                     setMargins(1, 1, 1, 1)
                 }
 
-                val cellView = if (board[r][c].isWhiteCell) {
+                val cellView = if (board[r][c].isWhiteCell) { //choses the white cells then add to be able to input a number(func below)
                     createInputCell(r, c)
                 } else {
-                    createClueCell(board[r][c])
+                    createClueCell(board[r][c]) //choes wich cell will be the clue cell
                 }
                 gridLayout.addView(cellView, params)
             }
         }
     }
 
-
+    /**makes the cell editable cell for player to be able to [ut numbers in]*/
     private fun createInputCell(r: Int, c: Int): View {
         val cell = board[r][c]
         val numCols = board[0].size
@@ -542,12 +556,12 @@ class GameActivity : AppCompatActivity() {
             }
             setBackgroundColor(backgroundColor)
 
-            setOnFocusChangeListener { _, hasFocus ->
+            setOnFocusChangeListener { _, hasFocus -> //so the user can see which cell they pick
                 if (hasFocus) {
                     selectedCell = this
                     setBackgroundColor(Color.LTGRAY)
                 } else {
-                    val currentBackgroundColor = when {
+                    val currentBackgroundColor = when { //change the back ground color is correct of not
                         cell.isCorrect -> ContextCompat.getColor(context, R.color.correctGreen)
                         cell.isConflict -> ContextCompat.getColor(context, R.color.errorRed)
                         else -> Color.WHITE
@@ -558,6 +572,8 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+
+    /**Creates a non-editable cell that displays clues (sums)  when the user clicks the level of chosice it will generate the clue cell*/
     private fun createClueCell(cell: KakuroCell): View {
         return if (cell.verticalSum == 0 && cell.horizontalSum == 0) {
             View(this).apply { setBackgroundColor(Color.BLACK) }
@@ -568,6 +584,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    /**updates the background color of cells based on if its correct, conflict(not corrcet), or normal*/
     private fun updateCellViews() {
         val numCols = board[0].size
         for (i in 0 until gridLayout.childCount) {
@@ -588,11 +605,13 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    /**triggers validation for the horizontal and vertical runs of the current cell the user is on*/
     private fun validateRuns(row: Int, col: Int) {
         validateRun(getHorizontalRun(row, col), isHorizontal = true)
         validateRun(getVerticalRun(row, col), isHorizontal = false)
     }
 
+    /**vlidates a single run (horizontal or vertical) for if its correct*/
     private fun validateRun(run: List<Pair<Int, Int>>, isHorizontal: Boolean) {
         if (run.isEmpty()) return
 
@@ -625,7 +644,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-
+    /**retrieves all the cells in the horizontal run of a the cell*/
     private fun getHorizontalRun(row: Int, col: Int): List<Pair<Int, Int>> {
         val numRows = board.size
         val numCols = board[0].size
@@ -645,6 +664,7 @@ class GameActivity : AppCompatActivity() {
         return run
     }
 
+    /**retrieves all the cells in the vertical run of a the cell*/
     private fun getVerticalRun(row: Int, col: Int): List<Pair<Int, Int>> {
         val numRows = board.size
         val numCols = board[0].size
@@ -665,14 +685,21 @@ class GameActivity : AppCompatActivity() {
     }
 
 
-
+    /**checks if the puzzle has been solved correctly*/
     private fun checkWinCondition() {
         val allCorrect = board.all { row ->
             row.all { cell -> !cell.isWhiteCell || cell.isCorrect }
         }
         if (allCorrect) {
-            Toast.makeText(this, "Congratulations! You solved the puzzle!", Toast.LENGTH_LONG)
-                .show()
+            Toast.makeText(this, "Congratulations! You solved the puzzle!", Toast.LENGTH_LONG).show()
         }
     }
+
+
+
+
+
+
+
+
 }
