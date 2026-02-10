@@ -7,7 +7,10 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
@@ -19,6 +22,7 @@ class LoginActivity : AppCompatActivity() {
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         val tvRegisterLink = findViewById<TextView>(R.id.tvRegisterLink)
+        val mainLayout = findViewById<android.view.View>(R.id.main)
 
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
@@ -47,7 +51,20 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "Login Failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                    when (e) {
+                        is FirebaseAuthInvalidUserException -> {
+                            Snackbar.make(mainLayout, "Account does not exist. Create one.", Snackbar.LENGTH_LONG)
+                                .setAction("Create") {
+                                    startActivity(Intent(this, RegisterActivity::class.java))
+                                }.show()
+                        }
+                        is FirebaseAuthInvalidCredentialsException -> {
+                            Toast.makeText(this, "Invalid email or password.", Toast.LENGTH_SHORT).show()
+                        }
+                        else -> {
+                            Toast.makeText(this, "Login Failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
         }
 

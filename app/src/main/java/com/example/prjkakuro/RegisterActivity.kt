@@ -19,6 +19,8 @@ class RegisterActivity : AppCompatActivity() {
         val etPassword = findViewById<EditText>(R.id.etRegPassword)
         val etConfirm = findViewById<EditText>(R.id.etConfirmPassword)
 
+        val tvLoginLink = findViewById<TextView>(R.id.tvLoginLink)
+
         btnSignUp.setOnClickListener {
             val user = etUsername.text.toString().trim()
             val email = etEmail.text.toString().trim()
@@ -40,6 +42,10 @@ class RegisterActivity : AppCompatActivity() {
                         Toast.makeText(this, "Username already taken", Toast.LENGTH_SHORT).show()
                     }
                 }
+        }
+
+        tvLoginLink.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
         }
     }
 

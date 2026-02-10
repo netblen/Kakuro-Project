@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.InputFilter
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -25,8 +26,7 @@ class GameActivity : AppCompatActivity() {
 
 
 
-     // MARK:  Initializes the activity, sets up the game board, and keypad listeners.
-
+     // MARK:  Initializes the activity, sets up the game board, and keypad listeners
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -49,8 +49,21 @@ class GameActivity : AppCompatActivity() {
         renderBoard()
     }
 
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        when (keyCode) {
+            in KeyEvent.KEYCODE_1..KeyEvent.KEYCODE_9 -> {
+                onNumberClick(keyCode - KeyEvent.KEYCODE_0)
+                return true
+            }
+            KeyEvent.KEYCODE_DEL, KeyEvent.KEYCODE_FORWARD_DEL -> {
+                onDeleteClick()
+                return true
+            }
+        }
+        return super.onKeyUp(keyCode, event)
+    }
+
     /**  aets up the listeners for the cells where user puts numbers and for my delete button(the button next to the nine**/
-    // TODO: remeber to fix the delete button
     private fun setupKeypad() {
         val keypadIds = listOf(
             R.id.btnNum1, R.id.btnNum2, R.id.btnNum3, R.id.btnNum4, R.id.btnNum5,
@@ -145,365 +158,9 @@ class GameActivity : AppCompatActivity() {
 
     /**initializes the game board based on the grid size chosen*/
     private fun setupBoard() {
-        when (gridSize) {
-            5 -> setup5x5Board()
-            9 -> setup9x8Board()
-            13 -> setup13x13Board()
-            else -> board = Array(gridSize) { Array(gridSize) { KakuroCell(isWhiteCell = true) } }
-        }
+        val boardSetup = BoardSetup(level)
+        board = boardSetup.setupBoard(gridSize)
     }
-
-    private fun setup5x5Board() {
-        val rawBoard = when (level) {
-            1 -> arrayOf(
-
-                intArrayOf(-1, 3000, 6000, -1, -1),
-
-                intArrayOf(3, 0, 0, 23000, -1),
-
-                intArrayOf(13, 0, 0, 0, 16000),
-
-                intArrayOf(-1, 19, 0, 0, 0),
-
-                intArrayOf(-1, -1, 13, 0, 0)
-
-            )
-
-            2 -> arrayOf(
-                intArrayOf(-1, -1, 29000, 10000, -1),
-
-                intArrayOf(-1, 3013, 0, 0, 16000),
-
-                intArrayOf(21, 0, 0, 0, 0),
-
-                intArrayOf(18, 0, 0, 0, 0),
-
-                intArrayOf(-1, 6, 0, 0, -1)
-            )
-
-            3 -> arrayOf(
-                intArrayOf(-1, -1, -1, 6000, 23000),
-
-                intArrayOf(-1, 7000, 24011, 0, 0),
-
-                intArrayOf(17, 0, 0, 0, 0),
-
-                intArrayOf(24, 0, 0, 0, 0),
-
-                intArrayOf(8, 0, 0, -1, -1)
-
-            )
-
-            4 -> arrayOf(
-                intArrayOf(-1, -1, -1, 7000, 3000),
-
-                intArrayOf(-1, -1, 23003, 0, 0),
-
-                intArrayOf(-1, 16015, 0, 0, 0),
-
-                intArrayOf(14, 0, 0, 0, -1),
-
-                intArrayOf(17, 0, 0, -1, -1)
-
-            )
-
-            5 -> arrayOf(
-                intArrayOf(-1, 16000, 30000, 10000, -1),
-
-                intArrayOf(18, 0, 0, 0, -1),
-
-                intArrayOf(20, 0, 0, 0, 4000),
-
-                intArrayOf(-1, 9, 0, 0, 0),
-
-                intArrayOf(-1, 13, 0, 0, 0)
-
-            )
-
-            else -> Array(5) { IntArray(5) }
-        }
-        board = Array(5) { row ->
-            Array(5) { column ->
-                val value = rawBoard[row][column]
-                when (value) {
-                    0 -> KakuroCell(isWhiteCell = true) //user imput will be avaible to put the number
-                    -1 -> KakuroCell(isWhiteCell = false) //cell will be unavaible so the user cant put a number
-
-
-
-                    else -> if (level == 1 && value in 1..9 && (column > 0 && row > 0)) {
-                        KakuroCell(isWhiteCell = true, currentValue = value) //gets the values from aboce
-                    } else {
-
-                        val vSum = value / 1000 //choseing if its a white cell?
-                        val hSum = value % 1000
-                        KakuroCell(isWhiteCell = false, verticalSum = vSum, horizontalSum = hSum)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun setup9x8Board() {
-        val rawBoard = when (level) {
-            1 -> arrayOf(
-                intArrayOf(-1, -1, 28000, 10000, -1, -1, -1, -1),
-
-                intArrayOf(-1, 9013, 0, 0, 11000, -1, -1, -1),
-
-                intArrayOf(16, 0, 0, 0, 0, 8000, -1, -1),
-
-                intArrayOf(16, 0, 0, 13007, 0, 0, 15000, -1),
-
-                intArrayOf(-1, 17, 0, 0, 8, 0, 0, 0),
-
-                intArrayOf(-1, 3, 0, 0, 4003, 0, 0, 3000),
-
-                intArrayOf(-1, -1, 4, 0, 0, 11004, 0, 0),
-
-                intArrayOf(-1, -1, -1, 17, 0, 0, 0, 0),
-
-                intArrayOf(-1, -1, -1, -1, 4, 0, 0, 0)
-            )
-
-            2 -> arrayOf(
-
-                intArrayOf(-1, -1, -1, 17000, 6000, -1, -1, -1),
-
-                intArrayOf(-1, -1, 4, 0, 0, 6000, -1, -1),
-
-                intArrayOf(-1, -1, 19016, 0, 0, 0, 24000, -1),
-
-                intArrayOf(-1, 6010, 0, 0, 3, 0, 0, 5000),
-
-                intArrayOf(9, 0, 0, 0, -1, 20007, 0, 0),
-
-                intArrayOf(10, 0, 0, 13000, 13, 0, 0, 0),
-
-                intArrayOf(-1, 10, 0, 0, 6013, 0, 0, -1),
-
-                intArrayOf(-1, -1, 20, 0, 0, 0, -1, -1),
-
-                intArrayOf(-1, -1, -1, 7, 0, 0, -1, -1)
-            )
-            3 -> arrayOf(
-
-                intArrayOf(-1, 3000, 8000, -1, -1, 24000, 6000, -1),
-
-                intArrayOf(7, 0, 0, 9000, 11, 0, 0, -1),
-
-                intArrayOf(11, 0, 0, 0, 24009, 0, 0, -1),
-
-                intArrayOf(-1, -1, 15, 0, 0, 0, -1, -1),
-
-                intArrayOf(-1, -1, -1, 26010, 0, 0, -1, -1),
-
-                intArrayOf(-1, -1, 15, 0, 0, 14000, -1, -1),
-
-                intArrayOf(-1, -1, 6021, 0, 0, 0, 7000, 3000),
-
-                intArrayOf(-1, 4, 0, 0, 10, 0, 0, 0),
-
-                intArrayOf(-1, 11, 0, 0, -1, 6, 0, 0)
-            )
-            4 -> arrayOf(
-
-                intArrayOf(-1, -1, -1, 21000, 9000, -1, -1, -1),
-
-                intArrayOf(-1, -1, 21015, 0, 0, 10000, -1, -1),
-
-                intArrayOf(-1, 15, 0, 0, 0, 0, 29000, -1),
-
-                intArrayOf(-1, 3016, 0, 0, 5, 0, 0, 16000),
-
-                intArrayOf(4, 0, 0, -1, -1, 17, 0, 0),
-
-                intArrayOf(8, 0, 0, 6000, -1, 7012, 0, 0),
-
-                intArrayOf(-1, 9, 0, 0, 11008, 0, 0, -1),
-
-                intArrayOf(-1, -1, 20, 0, 0, 0, 0, -1),
-
-                intArrayOf(-1, -1, -1, 4, 0, 0, -1, -1)
-            )
-            5 -> arrayOf(
-
-                intArrayOf(-1, -1, -1, -1, 4000, 25000, -1, -1),
-                // Row 1
-                intArrayOf(-1, -1, 5000, 14007, 0, 0, 9000, 11000),
-                // Row 2
-                intArrayOf(-1, 25, 0, 0, 0, 0, 0, 0),
-                // Row 3
-                intArrayOf(-1, 13, 0, 0, 4019, 0, 0, 0),
-                // Row 4
-                intArrayOf(-1, -1, -1, 23005, 0, 0, -1, -1),
-                // Row 5
-                intArrayOf(-1, 13000, 5011, 0, 0, 10000, 17000, -1),
-                // Row 6
-                intArrayOf(15, 0, 0, 0, 17017, 0, 0, -1),
-                // Row 7
-                intArrayOf(28, 0, 0, 0, 0, 0, 0, -1),
-                // Row 8
-                intArrayOf(-1, -1, 17, 0, 0, -1, -1, -1)
-            )
-
-            else -> Array(9) { IntArray(8) { -1 } }
-        }
-
-        val numRows = rawBoard.size
-        val numCols = rawBoard[0].size
-
-        board = Array(numRows) { row ->
-            Array(numCols) { column ->
-                val value = rawBoard[row][column]
-                when (value) {
-                    0 -> KakuroCell(isWhiteCell = true)
-                    -1 -> KakuroCell(isWhiteCell = false)
-                    else -> {
-                        val vSum = value / 1000
-                        val hSum = value % 1000
-                        KakuroCell(
-                            isWhiteCell = false,
-                            verticalSum = if (vSum > 0) vSum else 0,
-                            horizontalSum = if (hSum > 0) hSum else 0
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    //TODO: fix and app will crash cuz imcomplete table
-    private fun setup13x13Board() {
-        val rawBoard = when (level) {
-            1 -> arrayOf(
-
-                intArrayOf(-1, -1, -1, -1, 17000, 4000, -1, -1, 35000, 16000, -1, -1, -1),
-                // Row 1
-                intArrayOf(-1, -1, -1 ,3011, 0, 0, -1, 16016, 0, 0, -1, -1, -1),
-                // Row 2
-                intArrayOf(-1, 17000, 70012, 0, 0, 0, 40022, 0, 0, 0, 17000, 11000, -1),
-                // Row 3
-                intArrayOf(13, 0, 0, 0, 23, 70018, 0, 0, 0, 4009, 0, 0, -1),
-                // Row 4
-                intArrayOf(10, 0, 0, 24011, 0, 0, 0, 17, 0, 0, 0, 0, 17000),
-                // Row 5
-                intArrayOf(-1, 18, 0, 0, 0, 0, -1, 12, 0, 0, 60012, 0, 0),
-                // Row 6
-                intArrayOf(-1, -1, 4, 0, 0, 11004, 0, 0),
-                // Row 7
-                intArrayOf(-1, -1, -1, 17, 0, 0, 0, 0),
-                // Row 8
-                intArrayOf(-1, -1, -1, -1, 4, 0, 0, 0)
-            )
-
-            2 -> arrayOf(
-
-                intArrayOf(-1, -1, -1, 17000, 6000, -1, -1, -1),
-                // Row 1
-                intArrayOf(-1, -1, 4, 0, 0, 6000, -1, -1),
-                // Row 2
-                intArrayOf(-1, -1, 19016, 0, 0, 0, 24000, -1),
-                // Row 3
-                intArrayOf(-1, 6010, 0, 0, 3, 0, 0, 5000),
-                // Row 4
-                intArrayOf(9, 0, 0, 0, -1, 20007, 0, 0),
-                // Row 5
-                intArrayOf(10, 0, 0, 13000, 13, 0, 0, 0),
-                // Row 6
-                intArrayOf(-1, 10, 0, 0, 6013, 0, 0, -1),
-                // Row 7
-                intArrayOf(-1, -1, 20, 0, 0, 0, -1, -1),
-                // Row 8
-                intArrayOf(-1, -1, -1, 7, 0, 0, -1, -1)
-            )
-            3 -> arrayOf(
-
-                intArrayOf(-1, 3000, 8000, -1, -1, 24000, 6000, -1),
-
-                intArrayOf(7, 0, 0, 9000, 11, 0, 0, -1),
-
-                intArrayOf(11, 0, 0, 0, 24009, 0, 0, -1),
-
-                intArrayOf(-1, -1, 15, 0, 0, 0, -1, -1),
-
-                intArrayOf(-1, -1, -1, 26010, 0, 0, -1, -1),
-
-                intArrayOf(-1, -1, 15, 0, 0, 14000, -1, -1),
-
-                intArrayOf(-1, -1, 6021, 0, 0, 0, 7000, 3000),
-
-                intArrayOf(-1, 4, 0, 0, 10, 0, 0, 0),
-
-                intArrayOf(-1, 11, 0, 0, -1, 6, 0, 0)
-            )
-            4 -> arrayOf(
-
-                intArrayOf(-1, -1, -1, 21000, 9000, -1, -1, -1),
-
-                intArrayOf(-1, -1, 21015, 0, 0, 10000, -1, -1),
-
-                intArrayOf(-1, 15, 0, 0, 0, 0, 29000, -1),
-
-                intArrayOf(-1, 3016, 0, 0, 5, 0, 0, 16000),
-
-                intArrayOf(4, 0, 0, -1, -1, 17, 0, 0),
-
-                intArrayOf(8, 0, 0, 6000, -1, 7012, 0, 0),
-
-                intArrayOf(-1, 9, 0, 0, 11008, 0, 0, -1),
-
-                intArrayOf(-1, -1, 20, 0, 0, 0, 0, -1),
-
-                intArrayOf(-1, -1, -1, 4, 0, 0, -1, -1)
-            )
-            5 -> arrayOf(
-
-                intArrayOf(-1, -1, -1, -1, 4000, 25000, -1, -1),
-                // Row 1
-                intArrayOf(-1, -1, 5000, 14007, 0, 0, 9000, 11000),
-                // Row 2
-                intArrayOf(-1, 25, 0, 0, 0, 0, 0, 0),
-                // Row 3
-                intArrayOf(-1, 13, 0, 0, 4019, 0, 0, 0),
-                // Row 4
-                intArrayOf(-1, -1, -1, 23005, 0, 0, -1, -1),
-                // Row 5
-                intArrayOf(-1, 13000, 5011, 0, 0, 10000, 17000, -1),
-                // Row 6
-                intArrayOf(15, 0, 0, 0, 17017, 0, 0, -1),
-                // Row 7
-                intArrayOf(28, 0, 0, 0, 0, 0, 0, -1),
-                // Row 8
-                intArrayOf(-1, -1, 17, 0, 0, -1, -1, -1)
-            )
-
-            else -> Array(9) { IntArray(8) { -1 } }
-        }
-
-        val numRows = rawBoard.size
-        val numCols = rawBoard[0].size
-
-        board = Array(numRows) { row ->
-            Array(numCols) { column ->
-                val value = rawBoard[row][column]
-                when (value) {
-                    0 -> KakuroCell(isWhiteCell = true)
-                    -1 -> KakuroCell(isWhiteCell = false)
-                    else -> {
-                        val vSum = value / 1000
-                        val hSum = value % 1000
-                        KakuroCell(
-                            isWhiteCell = false,
-                            verticalSum = if (vSum > 0) vSum else 0,
-                            horizontalSum = if (hSum > 0) hSum else 0
-                        )
-                    }
-                }
-            }
-        }
-    }
-
 
     /**creates and displays the cells of grid*/
     private fun renderBoard() {
@@ -694,12 +351,5 @@ class GameActivity : AppCompatActivity() {
             Toast.makeText(this, "Congratulations! You solved the puzzle!", Toast.LENGTH_LONG).show()
         }
     }
-
-
-
-
-
-
-
 
 }

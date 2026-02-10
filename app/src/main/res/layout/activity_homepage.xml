@@ -7,39 +7,47 @@
     android:layout_height="match_parent"
     tools:context=".HomePageActivity">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        android:orientation="vertical" android:padding="24dp" android:gravity="center">
-
-        <TextView android:id="@+id/tvWelcome" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="24sp" android:layout_marginBottom="32dp"/>
-        <Button android:id="@+id/btnEasy" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Easy (5x5)" />
-        <Button android:id="@+id/btnMedium" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Medium (9x8)" android:layout_marginTop="8dp"/>
-        <Button android:id="@+id/btnHard" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Hard (10x10)" android:layout_marginTop="8dp"/>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center">
 
         <TextView
+            android:id="@+id/tvWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="User Menu (just test)"
-            android:layout_marginTop="32dp"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textSize="24sp"
+            android:layout_marginBottom="32dp"/>
 
         <Button
-            android:id="@+id/btnStats"
+            android:id="@+id/btnEasy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="My Stats"
+            android:text="Easy (5x5)" />
+
+        <Button
+            android:id="@+id/btnMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Medium (7x7)"
+            android:layout_marginTop="8dp"/>
+        <Button
+            android:id="@+id/btnHard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hard (9x8)"
             android:layout_marginTop="8dp"/>
 
         <Button
-            android:id="@+id/btnLeaderboard"
-            android:layout_width="match_parent"
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Leaderboard"
-            android:layout_marginTop="8dp"/>
+            android:text="Logout"
+            android:layout_marginTop="32dp"/>
 
     </LinearLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
