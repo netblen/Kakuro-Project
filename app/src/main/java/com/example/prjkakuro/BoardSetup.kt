@@ -3,13 +3,131 @@ package com.example.prjkakuro
 class BoardSetup(private val level: Int) {
 
     fun setupBoard(gridSize: Int): Array<Array<KakuroCell>> {
-        return when (gridSize) {
+        val board = when (gridSize) {
             5 -> setup5x5Board()
             7 -> setup7x7Board()
             9 -> setup9x8Board()
             else -> Array(gridSize) { Array(gridSize) { KakuroCell(isWhiteCell = true) } }
         }
+
+        // auto-solve board to populate solutionValue for hint system
+        solveBoard(board)
+
+        return board
     }
+
+    // --- dynamic kakuro solver ---
+
+    private fun solveBoard(board: Array<Array<KakuroCell>>): Boolean {
+        for (r in board.indices) {
+            for (c in board[0].indices) {
+                if (board[r][c].isWhiteCell && board[r][c].solutionValue == 0) {
+                    // try digits 1-9 for the empty cell
+                    for (num in 1..9) {
+                        if (isValidPlacement(board, r, c, num)) {
+                            board[r][c].solutionValue = num
+
+                            // also try to solve the rest of the board
+                            if (solveBoard(board)) {
+                                return true
+                            }
+
+                            // if it fails, backtrack and try the next number
+                            board[r][c].solutionValue = 0
+                        }
+                    }
+                    return false // trigger backtracking if no numbers 1-9 fit
+                }
+            }
+        }
+        return true // board is completely filled and valid
+    }
+
+    private fun isValidPlacement(board: Array<Array<KakuroCell>>, row: Int, col: Int, num: Int): Boolean {
+        return checkRun(board, row, col, num, true) && checkRun(board, row, col, num, false)
+    }
+
+    private fun checkRun(board: Array<Array<KakuroCell>>, row: Int, col: Int, num: Int, isHorizontal: Boolean): Boolean {
+        var clueTarget = 0
+        var currentSum = num
+        var emptyCount = 0
+
+        // array to track dupes (1-9)
+        val usedNumbers = BooleanArray(10)
+        usedNumbers[num] = true
+
+        if (isHorizontal) {
+            // traverse Left to find clue and add up left values
+            var c = col - 1
+            while (c >= 0 && board[row][c].isWhiteCell) {
+                val v = board[row][c].solutionValue
+                if (v != 0) {
+                    if (usedNumbers[v]) return false // dupe found
+                    usedNumbers[v] = true
+                    currentSum += v
+                } else {
+                    emptyCount++
+                }
+                c--
+            }
+            // assign the horizontal clue
+            if (c >= 0 && !board[row][c].isWhiteCell) clueTarget = board[row][c].horizontalSum
+
+            // traverse Right to add up right values
+            c = col + 1
+            while (c < board[0].size && board[row][c].isWhiteCell) {
+                val v = board[row][c].solutionValue
+                if (v != 0) {
+                    if (usedNumbers[v]) return false // dupe found
+                    usedNumbers[v] = true
+                    currentSum += v
+                } else {
+                    emptyCount++
+                }
+                c++
+            }
+        } else {
+            // traverse Up to find clue and add up top values
+            var r = row - 1
+            while (r >= 0 && board[r][col].isWhiteCell) {
+                val v = board[r][col].solutionValue
+                if (v != 0) {
+                    if (usedNumbers[v]) return false // Duplicate found
+                    usedNumbers[v] = true
+                    currentSum += v
+                } else {
+                    emptyCount++
+                }
+                r--
+            }
+            // assign the vertical clue
+            if (r >= 0 && !board[r][col].isWhiteCell) clueTarget = board[r][col].verticalSum
+
+            // traverse down to add up bottom values
+            r = row + 1
+            while (r < board.size && board[r][col].isWhiteCell) {
+                val v = board[r][col].solutionValue
+                if (v != 0) {
+                    if (usedNumbers[v]) return false // dupe found
+                    usedNumbers[v] = true
+                    currentSum += v
+                } else {
+                    emptyCount++
+                }
+                r++
+            }
+        }
+
+        // validate the sum logic against the clue
+        if (clueTarget > 0) {
+            if (emptyCount == 0 && currentSum != clueTarget) return false // finished run but wrong sum
+            if (emptyCount > 0 && currentSum >= clueTarget) return false // unfinished run but already exceeded target
+        }
+
+        return true
+    }
+
+    // --- board templates ---
 
     private fun setup5x5Board(): Array<Array<KakuroCell>> {
         val rawBoard = when (level) {

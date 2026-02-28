@@ -24,6 +24,7 @@ class HomePageActivity : AppCompatActivity() {
         val btnEasy = findViewById<Button>(R.id.btnEasy)
         val btnMedium = findViewById<Button>(R.id.btnMedium)
         val btnHard = findViewById<Button>(R.id.btnHard)
+        val btnStats = findViewById<Button>(R.id.btnStats)
         val btnLogout = findViewById<Button>(R.id.btnLogout)
 
         //changes welcome logic based on user type so the if type less lines by using when
@@ -43,8 +44,10 @@ class HomePageActivity : AppCompatActivity() {
 
         //if the user is a guest will restrict the access to others difficulties levels
         if (isGuest) {
-            val guestClickListener = View.OnClickListener {
+            // kide the stats button for guests
+            btnStats.visibility = View.GONE
 
+            val guestClickListener = View.OnClickListener {
                 Snackbar.make(mainLayout, "Create an account to play harder levels.", Snackbar.LENGTH_LONG)
                     .setAction("Register") {
                         startActivity(Intent(this, RegisterActivity::class.java))
@@ -53,7 +56,11 @@ class HomePageActivity : AppCompatActivity() {
             btnMedium.setOnClickListener(guestClickListener)
             btnHard.setOnClickListener(guestClickListener)
         } else {
-            //user registered will allow them to select any difficulty
+            //user registered will allow them to select any difficulty and access stats
+            btnStats.setOnClickListener {
+                startActivity(Intent(this, StatsActivity::class.java))
+            }
+
             btnMedium.setOnClickListener { showLevelSelection(7) }
             btnHard.setOnClickListener { showLevelSelection(9) }
         }

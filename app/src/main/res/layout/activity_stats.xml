@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/tvStatsTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Statistics"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp" />
+
+    <TextView
+        android:id="@+id/tvTotalWins"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total Puzzles Solved: Loading..."
+        android:textSize="18sp"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/tvTotalHints"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total Hints Used: Loading..."
+        android:textSize="18sp"
+        android:layout_marginBottom="32dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fastest Times"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/tvFastest5x5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Easy (5x5): --:--"
+        android:textSize="18sp"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/tvFastest7x7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Medium (7x7): --:--"
+        android:textSize="18sp"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/tvFastest9x8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hard (9x8): --:--"
+        android:textSize="18sp"
+        android:layout_marginBottom="40dp" />
+
+    <Button
+        android:id="@+id/btnBackToMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to Menu" />
+
+</LinearLayout>

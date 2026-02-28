@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="btnBackToMenu" type="id" />
+    <item name="tvTotalWins" type="id" />
+    <item name="tvTotalHints" type="id" />
+    <item name="tvFastest5x5" type="id" />
+    <item name="tvFastest7x7" type="id" />
+    <item name="tvFastest9x8" type="id" />
+    <item name="tvStatsTitle" type="id" />
+</resources>

@@ -1,17 +1,23 @@
 package com.example.prjkakuro
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.InputFilter
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
+import android.widget.Chronometer
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.gridlayout.widget.GridLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 data class Move(val row: Int, val col: Int, val oldValue: Int, val newValue: Int)
 
@@ -24,9 +30,13 @@ class GameActivity : AppCompatActivity() {
     private val redoStack = ArrayDeque<Move>()
     private var selectedCell: EditText? = null
 
+    // Timer & Hint Variables
+    private lateinit var timer: Chronometer
+    private var timeWhenStopped: Long = 0
+    private var isTimerRunning = false
+    private var hintsRemaining: Int = 3 // default hint limit
+    private lateinit var btnHint: Button
 
-
-     // MARK:  Initializes the activity, sets up the game board, and keypad listeners
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -38,8 +48,17 @@ class GameActivity : AppCompatActivity() {
         gridLayout.columnCount = gridSize
         gridLayout.rowCount = gridSize
 
+        // initialize timer
+        timer = findViewById(R.id.gameTimer)
+        startTimer()
+
+        // initialize buttons
         findViewById<Button>(R.id.btnUndo).setOnClickListener { undo() }
         findViewById<Button>(R.id.btnRedo).setOnClickListener { redo() }
+
+        btnHint = findViewById(R.id.btnHint)
+        updateHintButtonText()
+        btnHint.setOnClickListener { useHint() }
 
         setupKeypad()
 
@@ -47,6 +66,74 @@ class GameActivity : AppCompatActivity() {
 
         setupBoard()
         renderBoard()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pauseTimer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isTimerRunning && timeWhenStopped != 0L) {
+            startTimer()
+        }
+    }
+
+    private fun startTimer() {
+        timer.base = SystemClock.elapsedRealtime() - timeWhenStopped
+        timer.start()
+        isTimerRunning = true
+    }
+
+    private fun pauseTimer() {
+        if (isTimerRunning) {
+            timer.stop()
+            timeWhenStopped = SystemClock.elapsedRealtime() - timer.base
+            isTimerRunning = false
+        }
+    }
+
+    private fun useHint() {
+        if (hintsRemaining <= 0) {
+            Toast.makeText(this, "No hints left!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val emptyCells = mutableListOf<Pair<Int, Int>>()
+        for (r in board.indices) {
+            for (c in board[0].indices) {
+                if (board[r][c].isWhiteCell && board[r][c].currentValue == 0) {
+                    emptyCells.add(Pair(r, c))
+                }
+            }
+        }
+
+        if (emptyCells.isEmpty()) {
+            Toast.makeText(this, "No empty cells to hint!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val (hintRow, hintCol) = emptyCells.random()
+        val cell = board[hintRow][hintCol]
+
+        val correctValue = cell.solutionValue
+
+        if (correctValue == 0) {
+            Toast.makeText(this, "Solution mapping missing in BoardSetup.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        recordMove(hintRow, hintCol, 0, correctValue)
+        applyMove(hintRow, hintCol, correctValue)
+
+        hintsRemaining--
+        updateHintButtonText()
+        checkWinCondition()
+    }
+
+    private fun updateHintButtonText() {
+        btnHint.text = "Hint ($hintsRemaining)"
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
@@ -63,7 +150,6 @@ class GameActivity : AppCompatActivity() {
         return super.onKeyUp(keyCode, event)
     }
 
-    /**  aets up the listeners for the cells where user puts numbers and for my delete button(the button next to the nine**/
     private fun setupKeypad() {
         val keypadIds = listOf(
             R.id.btnNum1, R.id.btnNum2, R.id.btnNum3, R.id.btnNum4, R.id.btnNum5,
@@ -77,18 +163,13 @@ class GameActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnDelete).setOnClickListener { onDeleteClick() }
     }
 
-
-    /**  Handles the clicks on the number cells
-     * updatie the selected cell value with the number
-     **/
     private fun onNumberClick(number: Int) {
         selectedCell?.let {
-
             val numCols = board[0].size
             val row = it.tag as Int / numCols
             val column = it.tag as Int % numCols
-
             val cell = board[row][column]
+
             if (cell.currentValue != number) {
                 recordMove(row, column, cell.currentValue, number)
                 cell.currentValue = number
@@ -100,14 +181,13 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    /**handles clicks on the delete button,
-     *  clears the selected cell number **/
     private fun onDeleteClick() {
         selectedCell?.let {
             val numCols = board[0].size
             val row = it.tag as Int / numCols
             val column = it.tag as Int % numCols
             val cell = board[row][column]
+
             if (cell.currentValue != 0) {
                 recordMove(row, column, cell.currentValue, 0)
                 cell.currentValue = 0
@@ -119,13 +199,11 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    /**save a move to the undos so when the undo is click the move they just did is undon */
     private fun recordMove(row: Int, col: Int, oldValue: Int, newValue: Int) {
         undoStack.addLast(Move(row, col, oldValue, newValue))
         redoStack.clear()
     }
 
-    /**undo the last move */
     private fun undo() {
         if (undoStack.isNotEmpty()) {
             val move = undoStack.removeLast()
@@ -134,7 +212,6 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    /**redoe the last undo move*/
     private fun redo() {
         if (redoStack.isNotEmpty()) {
             val move = redoStack.removeLast()
@@ -143,11 +220,8 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    /**applies a move to the board and updates the grid(related tp the undo and redo buton*/
     private fun applyMove(row: Int, col: Int, value: Int) {
         board[row][col].currentValue = value
-
-
         val numCols = board[0].size
         val view = gridLayout.findViewWithTag<EditText>(row * numCols + col)
 
@@ -156,17 +230,13 @@ class GameActivity : AppCompatActivity() {
         updateCellViews()
     }
 
-    /**initializes the game board based on the grid size chosen*/
     private fun setupBoard() {
         val boardSetup = BoardSetup(level)
         board = boardSetup.setupBoard(gridSize)
     }
 
-    /**creates and displays the cells of grid*/
     private fun renderBoard() {
         gridLayout.removeAllViews()
-
-    //gets the variables from up
         val numRows = board.size
         val numCols = board[0].size
         gridLayout.rowCount = numRows
@@ -174,7 +244,6 @@ class GameActivity : AppCompatActivity() {
 
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
-
         val cellSize = (screenWidth * 0.9 / numCols).toInt()
 
         for (r in 0 until numRows) {
@@ -185,17 +254,16 @@ class GameActivity : AppCompatActivity() {
                     setMargins(1, 1, 1, 1)
                 }
 
-                val cellView = if (board[r][c].isWhiteCell) { //choses the white cells then add to be able to input a number(func below)
+                val cellView = if (board[r][c].isWhiteCell) {
                     createInputCell(r, c)
                 } else {
-                    createClueCell(board[r][c]) //choes wich cell will be the clue cell
+                    createClueCell(board[r][c])
                 }
                 gridLayout.addView(cellView, params)
             }
         }
     }
 
-    /**makes the cell editable cell for player to be able to [ut numbers in]*/
     private fun createInputCell(r: Int, c: Int): View {
         val cell = board[r][c]
         val numCols = board[0].size
@@ -213,12 +281,12 @@ class GameActivity : AppCompatActivity() {
             }
             setBackgroundColor(backgroundColor)
 
-            setOnFocusChangeListener { _, hasFocus -> //so the user can see which cell they pick
+            setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     selectedCell = this
                     setBackgroundColor(Color.LTGRAY)
                 } else {
-                    val currentBackgroundColor = when { //change the back ground color is correct of not
+                    val currentBackgroundColor = when {
                         cell.isCorrect -> ContextCompat.getColor(context, R.color.correctGreen)
                         cell.isConflict -> ContextCompat.getColor(context, R.color.errorRed)
                         else -> Color.WHITE
@@ -229,8 +297,6 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-
-    /**Creates a non-editable cell that displays clues (sums)  when the user clicks the level of chosice it will generate the clue cell*/
     private fun createClueCell(cell: KakuroCell): View {
         return if (cell.verticalSum == 0 && cell.horizontalSum == 0) {
             View(this).apply { setBackgroundColor(Color.BLACK) }
@@ -241,7 +307,6 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    /**updates the background color of cells based on if its correct, conflict(not corrcet), or normal*/
     private fun updateCellViews() {
         val numCols = board[0].size
         for (i in 0 until gridLayout.childCount) {
@@ -262,13 +327,11 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    /**triggers validation for the horizontal and vertical runs of the current cell the user is on*/
     private fun validateRuns(row: Int, col: Int) {
         validateRun(getHorizontalRun(row, col), isHorizontal = true)
         validateRun(getVerticalRun(row, col), isHorizontal = false)
     }
 
-    /**vlidates a single run (horizontal or vertical) for if its correct*/
     private fun validateRun(run: List<Pair<Int, Int>>, isHorizontal: Boolean) {
         if (run.isEmpty()) return
 
@@ -301,7 +364,6 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    /**retrieves all the cells in the horizontal run of a the cell*/
     private fun getHorizontalRun(row: Int, col: Int): List<Pair<Int, Int>> {
         val numRows = board.size
         val numCols = board[0].size
@@ -321,7 +383,6 @@ class GameActivity : AppCompatActivity() {
         return run
     }
 
-    /**retrieves all the cells in the vertical run of a the cell*/
     private fun getVerticalRun(row: Int, col: Int): List<Pair<Int, Int>> {
         val numRows = board.size
         val numCols = board[0].size
@@ -341,15 +402,68 @@ class GameActivity : AppCompatActivity() {
         return run
     }
 
-
-    /**checks if the puzzle has been solved correctly*/
     private fun checkWinCondition() {
         val allCorrect = board.all { row ->
             row.all { cell -> !cell.isWhiteCell || cell.isCorrect }
         }
         if (allCorrect) {
-            Toast.makeText(this, "Congratulations! You solved the puzzle!", Toast.LENGTH_LONG).show()
+            pauseTimer()
+
+            val elapsedTime = SystemClock.elapsedRealtime() - timer.base
+            val hintsUsed = 3 - hintsRemaining
+
+            saveGameStats(elapsedTime, hintsUsed)
+
+            AlertDialog.Builder(this)
+                .setTitle("Puzzle Solved!")
+                .setMessage("Great job! You have completed the level.")
+                .setPositiveButton("Return to Menu") { _, _ ->
+                    val intent = Intent(this, HomePageActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    finish()
+                }
+                .setCancelable(false)
+                .show()
         }
     }
 
+    private fun saveGameStats(elapsedTime: Long, hintsUsed: Int) {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user == null) return // guests do not save stats
+
+        val db = FirebaseFirestore.getInstance()
+        val userRef = db.collection("Users").document(user.uid)
+
+        // determines field name based on grid size
+        val cols = if (gridSize == 9) 8 else gridSize
+        val timeField = "fastestTime_${gridSize}x${cols}"
+
+        userRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                val currentWins = document.getLong("totalWins") ?: 0L
+                val currentHintsTotal = document.getLong("totalHintsUsed") ?: 0L
+                val currentFastest = document.getLong(timeField)
+
+                val updates = hashMapOf<String, Any>(
+                    "totalWins" to currentWins + 1,
+                    "totalHintsUsed" to currentHintsTotal + hintsUsed
+                )
+
+                if (currentFastest == null || elapsedTime < currentFastest) {
+                    updates[timeField] = elapsedTime
+                }
+
+                userRef.update(updates)
+            } else {
+                // failsafe in case user document is empty
+                val newStats = hashMapOf(
+                    "totalWins" to 1L,
+                    "totalHintsUsed" to hintsUsed.toLong(),
+                    timeField to elapsedTime
+                )
+                userRef.set(newStats)
+            }
+        }
+    }
 }
