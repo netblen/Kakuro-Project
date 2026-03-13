@@ -4,12 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 
 class HomePageActivity : AppCompatActivity() {
-    private var gameCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,38 +17,32 @@ class HomePageActivity : AppCompatActivity() {
 
         val tvWelcome = findViewById<TextView>(R.id.tvWelcome)
         val user = intent.getStringExtra("USERNAME") ?: "Player"
-        val isNew = intent.getBooleanExtra("IS_NEW_USER", false)
         val isGuest = intent.getBooleanExtra("IS_GUEST", false)
         val mainLayout = findViewById<View>(R.id.main)
 
+        // UI Components
         val btnEasy = findViewById<Button>(R.id.btnEasy)
         val btnMedium = findViewById<Button>(R.id.btnMedium)
         val btnHard = findViewById<Button>(R.id.btnHard)
         val btnStats = findViewById<Button>(R.id.btnStats)
+        val btnLeaderboard = findViewById<Button>(R.id.btnLeaderboard)
         val btnLogout = findViewById<Button>(R.id.btnLogout)
+        val btnTutorial = findViewById<Button>(R.id.btnTutorial)
 
-        //changes welcome logic based on user type so the if type less lines by using when
-        when {
-            //if the user is a guest, show a welcome message and hides the logout button
-            isGuest -> {
-                tvWelcome.text = "Welcome, Guest!"
-                btnLogout.visibility = View.GONE
-            }
-            //if the user is new this will show a personalized welcome message
-            isNew -> tvWelcome.text = "Welcome, $user!"
-            //if the user is a returning user this will show a "welcome back" message
-            else -> tvWelcome.text = "Welcome back, $user!"
-        }
+        tvWelcome.text = if (isGuest) "Welcome, Guest!" else "Welcome back, $user!"
+
+        // US4: Tutorial Pop-up
+        btnTutorial.setOnClickListener { showTutorialDialog() }
 
         btnEasy.setOnClickListener { showLevelSelection(5) }
 
-        //if the user is a guest will restrict the access to others difficulties levels
         if (isGuest) {
-            // kide the stats button for guests
+            btnLogout.visibility = View.GONE
             btnStats.visibility = View.GONE
+            btnLeaderboard.visibility = View.GONE
 
             val guestClickListener = View.OnClickListener {
-                Snackbar.make(mainLayout, "Create an account to play harder levels.", Snackbar.LENGTH_LONG)
+                Snackbar.make(mainLayout, "Create an account for full access.", Snackbar.LENGTH_LONG)
                     .setAction("Register") {
                         startActivity(Intent(this, RegisterActivity::class.java))
                     }.show()
@@ -56,26 +50,30 @@ class HomePageActivity : AppCompatActivity() {
             btnMedium.setOnClickListener(guestClickListener)
             btnHard.setOnClickListener(guestClickListener)
         } else {
-            //user registered will allow them to select any difficulty and access stats
-            btnStats.setOnClickListener {
-                startActivity(Intent(this, StatsActivity::class.java))
-            }
-
+            btnStats.setOnClickListener { startActivity(Intent(this, StatsActivity::class.java)) }
+            btnLeaderboard.setOnClickListener { startActivity(Intent(this, LeaderboardActivity::class.java)) }
             btnMedium.setOnClickListener { showLevelSelection(7) }
             btnHard.setOnClickListener { showLevelSelection(9) }
         }
 
-        //logout button click
         btnLogout.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
-            val intent = Intent(this, StartActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+            startActivity(Intent(this, StartActivity::class.java))
             finish()
         }
     }
 
-    //Navigates to the LevelSelectionActivity with the selected grid size
+    private fun showTutorialDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("How to Play Kakuro")
+            .setMessage("1. Fill white cells with numbers 1-9.\n\n" +
+                    "2. The sum of each horizontal or vertical run must equal the clue number shown in the grey cells.\n\n" +
+                    "3. You cannot repeat the same number within a single run (row or column block).\n\n" +
+                    "4. Use 'Undo' to fix mistakes or 'Hint' if you get stuck!")
+            .setPositiveButton("Got it!") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
     private fun showLevelSelection(size: Int) {
         val intent = Intent(this, LevelSelectionActivity::class.java)
         intent.putExtra("GRID_SIZE", size)

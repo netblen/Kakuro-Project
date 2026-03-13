@@ -13,9 +13,11 @@
         android:theme="@style/Theme.PrjKakuro">
 
         <activity
+            android:name=".LeaderboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".StatsActivity"
             android:exported="false" />
-
         <activity
             android:name=".GameActivity"
             android:exported="false" />
