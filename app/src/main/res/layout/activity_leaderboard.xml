@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#021317"
     android:padding="24dp">
 
     <LinearLayout
@@ -13,12 +14,80 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Global Leaderboard"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp" />
+            android:text="Leaderboard"
+            android:id="@+id/tvStatsTitle"
 
-        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="32dp"
+
+            android:textColor="#05e2f2"
+            android:textSize="40sp"
+            android:textStyle="bold|italic"
+
+            android:shadowColor="#05e2f2"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="10"/>
+
+        <LinearLayout
+            android:id="@+id/difficultySelector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:background="@drawable/pill_bg"
+            android:padding="4dp">
+
+            <Button
+                android:id="@+id/btnEasy"
+                android:text="EASY"
+                style="@style/PillButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btnMedium"
+                style="@style/PillButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MEDIUM" />
+
+            <Button
+                android:id="@+id/btnHard"
+                android:text="HARD"
+                style="@style/PillButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvLeaderboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
+
+
+        <Button
+            android:id="@+id/btnBackFromLeaderboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:text="Back to Menu"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="20dp"
+
+            android:backgroundTint="#05e2f2"
+            />
+
+    </LinearLayout>
+</ScrollView>
+
+<!--
+<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Top 10: Easy (5x5)"
@@ -64,13 +133,4 @@
             android:layout_height="wrap_content"
             android:text="Loading..."
             android:textSize="16sp"
-            android:layout_marginBottom="32dp" />
-
-        <Button
-            android:id="@+id/btnBackFromLeaderboard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Back to Menu" />
-
-    </LinearLayout>
-</ScrollView>
+            android:layout_marginBottom="32dp" />-->

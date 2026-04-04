@@ -43,15 +43,15 @@ class StatsActivity : AppCompatActivity() {
                     val time7x7 = document.getLong("fastestTime_7x7")
                     val time9x8 = document.getLong("fastestTime_9x8")
 
-                    tvTotalWins.text = "Total Puzzles Solved: $wins"
-                    tvTotalHints.text = "Total Hints Used: $hints"
+                    tvTotalWins.text = "$wins"
+                    tvTotalHints.text = "$hints"
 
-                    tvFastest5x5.text = "Easy (5x5): ${formatTime(time5x5)}"
-                    tvFastest7x7.text = "Medium (7x7): ${formatTime(time7x7)}"
-                    tvFastest9x8.text = "Hard (9x8): ${formatTime(time9x8)}"
+                    tvFastest5x5.text = "${formatTime(time5x5)}"
+                    tvFastest7x7.text = "${formatTime(time7x7)}"
+                    tvFastest9x8.text = "${formatTime(time9x8)}"
                 } else {
-                    tvTotalWins.text = "Total Puzzles Solved: 0"
-                    tvTotalHints.text = "Total Hints Used: 0"
+                    tvTotalWins.text = "0"
+                    tvTotalHints.text = "0"
                 }
             }
             .addOnFailureListener {

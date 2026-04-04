@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,31 +12,76 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="40dp"/>
+        android:textColor="#05e2f2"
+        android:textSize="40sp"
+        android:textStyle="bold|italic"
+
+        android:shadowColor="#05e2f2"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="10"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ready for your next high score?"
+        android:layout_marginTop="20dp"
+        android:paddingBottom="50dp"/>
 
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:hint="Email"
+        android:padding="10dp"
         android:inputType="textEmailAddress"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#bfccf2"/>
 
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:hint="Password"
+        android:padding="10dp"
         android:inputType="textPassword"
-        android:layout_marginBottom="24dp"/>
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#bfccf2"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Login"/>
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:layout_marginEnd="8dp"
+
+        android:backgroundTint="#dee8fa"
+        android:gravity="center_vertical|center_horizontal"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        android:letterSpacing="0.1"
+        android:text="LOG IN"
+
+        android:textAllCaps="true"
+        android:textColor="#0a192e"
+        android:textSize="14sp"
+        android:textStyle="bold"
+
+        app:cornerRadius="28dp"
+        app:elevation="8dp"
+        app:icon="@drawable/ic_login"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+
+
+        app:iconSize="24dp"
+        app:iconTint="#207FCE"
+
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="10"
+        />
 
 
 
@@ -45,6 +91,6 @@
         android:layout_height="wrap_content"
         android:text="Don't have an account? Register"
         android:layout_marginTop="20dp"
-        android:textColor="?attr/colorPrimary"/>
+        android:textColor="#05e2f2"/>
 
 </LinearLayout>

@@ -20,13 +20,19 @@ class HomePageActivity : AppCompatActivity() {
         val isGuest = intent.getBooleanExtra("IS_GUEST", false)
         val mainLayout = findViewById<View>(R.id.main)
 
-        // UI Components
-        val btnEasy = findViewById<Button>(R.id.btnEasy)
-        val btnMedium = findViewById<Button>(R.id.btnMedium)
-        val btnHard = findViewById<Button>(R.id.btnHard)
-        val btnStats = findViewById<Button>(R.id.btnStats)
-        val btnLeaderboard = findViewById<Button>(R.id.btnLeaderboard)
-        val btnLogout = findViewById<Button>(R.id.btnLogout)
+        // ui components
+//        val btnEasy = findViewById<Button>(R.id.btnEasy)
+        val btnEasy = findViewById<ImageButton>(R.id.btnEasy)
+//        val btnMedium = findViewById<Button>(R.id.btnMedium)
+        val btnMedium = findViewById<ImageButton>(R.id.btnMedium)
+//        val btnHard = findViewById<Button>(R.id.btnHard)
+        val btnHard = findViewById<ImageButton>(R.id.btnHard)
+//        val btnStats = findViewById<Button>(R.id.btnStats)
+        val btnStats = findViewById<ImageButton>(R.id.btnStats)
+//        val btnLeaderboard = findViewById<Button>(R.id.btnLeaderboard)
+        val btnLeaderboard = findViewById<ImageButton>(R.id.btnLeaderboard)
+//        val btnLogout = findViewById<Button>(R.id.btnLogout)
+        val btnLogout = findViewById<LinearLayout>(R.id.btnLogout)
         val btnTutorial = findViewById<Button>(R.id.btnTutorial)
 
         tvWelcome.text = if (isGuest) "Welcome, Guest!" else "Welcome back, $user!"
@@ -36,10 +42,12 @@ class HomePageActivity : AppCompatActivity() {
 
         btnEasy.setOnClickListener { showLevelSelection(5) }
 
+
+
         if (isGuest) {
             btnLogout.visibility = View.GONE
-            btnStats.visibility = View.GONE
-            btnLeaderboard.visibility = View.GONE
+//            btnStats.visibility = View.GONE
+//            btnLeaderboard.visibility = View.GONE
 
             val guestClickListener = View.OnClickListener {
                 Snackbar.make(mainLayout, "Create an account for full access.", Snackbar.LENGTH_LONG)
@@ -49,6 +57,8 @@ class HomePageActivity : AppCompatActivity() {
             }
             btnMedium.setOnClickListener(guestClickListener)
             btnHard.setOnClickListener(guestClickListener)
+            btnLeaderboard.setOnClickListener(guestClickListener)
+            btnStats.setOnClickListener(guestClickListener)
         } else {
             btnStats.setOnClickListener { startActivity(Intent(this, StatsActivity::class.java)) }
             btnLeaderboard.setOnClickListener { startActivity(Intent(this, LeaderboardActivity::class.java)) }
@@ -63,15 +73,41 @@ class HomePageActivity : AppCompatActivity() {
         }
     }
 
+//    private fun showTutorialDialog() {
+//        AlertDialog.Builder(this)
+//            .setTitle("How to Play Kakuro")
+//            .setMessage("1. Fill white cells with numbers 1-9.\n\n" +
+//                    "2. The sum of each horizontal or vertical run must equal the clue number shown in the grey cells.\n\n" +
+//                    "3. You cannot repeat the same number within a single run (row or column block).\n\n" +
+//                    "4. Use 'Undo' to fix mistakes or 'Hint' if you get stuck!")
+//            .setPositiveButton("Got it!") { dialog, _ -> dialog.dismiss() }
+//            .show()
+//    }
+
     private fun showTutorialDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("How to Play Kakuro")
-            .setMessage("1. Fill white cells with numbers 1-9.\n\n" +
-                    "2. The sum of each horizontal or vertical run must equal the clue number shown in the grey cells.\n\n" +
-                    "3. You cannot repeat the same number within a single run (row or column block).\n\n" +
-                    "4. Use 'Undo' to fix mistakes or 'Hint' if you get stuck!")
-            .setPositiveButton("Got it!") { dialog, _ -> dialog.dismiss() }
-            .show()
+        val view = layoutInflater.inflate(R.layout.dialog_tutorial, null)
+
+//        val message = view.findViewById<TextView>(R.id.dialogMessage)
+        val rule1 = view.findViewById<TextView>(R.id.tvRule1)
+        val rule2 = view.findViewById<TextView>(R.id.tvRule2)
+        val rule3 = view.findViewById<TextView>(R.id.tvRule3)
+        val rule4 = view.findViewById<TextView>(R.id.tvRule4)
+        val button = view.findViewById<Button>(R.id.btnOk)
+
+        rule1.text = "Fill white cells with numbers 1-9."
+        rule2.text = "The sum of each horizontal or vertical run must equal the clue number shown in the grey cells."
+        rule3.text = "You cannot repeat the same number within a single run."
+        rule4.text = "Use 'Undo' or 'Hint' if you get stuck!"
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(view)
+            .create()
+
+        button.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun showLevelSelection(size: Int) {

@@ -4,4 +4,15 @@
     <color name="white">#FFFFFFFF</color>
     <color name="correctGreen">#A5D6A7</color>
     <color name="errorRed">#FFCDD2</color>
+
+    <!-- Backgrounds -->
+    <color name="surface">#f6f5ff</color>
+    <color name="primary">#005ab3</color>
+    <color name="tertiary">#853d97</color>
+
+    <!-- Text -->
+    <color name="on_surface">#212d51</color>
+    <color name="text_primary">#005ab3</color>
+    <color name="text_secondary">#3155b7</color>
+
 </resources>

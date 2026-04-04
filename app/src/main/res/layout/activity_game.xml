@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#052a33"
     android:padding="16dp">
 
     <Chronometer
@@ -10,8 +11,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:format="Time: %s"
-        android:textSize="20sp" />
+        android:format="%s"
+        android:textSize="22sp"
+        android:textColor="#05e2f2"
+        android:padding="12dp"
+        android:background="@drawable/pill_bg"/>
 
     <LinearLayout
         android:id="@+id/buttons_layout"
@@ -19,21 +23,24 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/gameTimer"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnUndo"
+            style="@style/PillButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Undo" />
+            android:text="Undo"
+            android:layout_marginEnd="8dp"/>
 
         <Button
             android:id="@+id/btnRedo"
+            style="@style/PillButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:text="Redo" />
+
     </LinearLayout>
 
     <androidx.gridlayout.widget.GridLayout
@@ -58,13 +65,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_marginBottom="8dp">
 
-            <Button android:id="@+id/btnNum1" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="1" />
-            <Button android:id="@+id/btnNum2" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="2" />
-            <Button android:id="@+id/btnNum3" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="3" />
-            <Button android:id="@+id/btnNum4" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="4" />
-            <Button android:id="@+id/btnNum5" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="5" />
+            <Button android:id="@+id/btnNum1" style="@style/PillButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="1" android:layout_margin="2dp"/>
+            <Button android:id="@+id/btnNum2" style="@style/PillButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="2" android:layout_margin="2dp"/>
+            <Button android:id="@+id/btnNum3" style="@style/PillButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="3" android:layout_margin="2dp"/>
+            <Button android:id="@+id/btnNum4" style="@style/PillButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="4" android:layout_margin="2dp"/>
+            <Button android:id="@+id/btnNum5" style="@style/PillButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="5" android:layout_margin="2dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -72,20 +80,22 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center">
-            <Button android:id="@+id/btnNum6" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="6" />
-            <Button android:id="@+id/btnNum7" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="7" />
-            <Button android:id="@+id/btnNum8" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="8" />
-            <Button android:id="@+id/btnNum9" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="9" />
-            <Button android:id="@+id/btnDelete" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="X" />
+            <Button android:id="@+id/btnNum6" style="@style/PillButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="6" android:layout_margin="2dp"/>
+            <Button android:id="@+id/btnNum7" style="@style/PillButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="7" android:layout_margin="2dp"/>
+            <Button android:id="@+id/btnNum8" style="@style/PillButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="8" android:layout_margin="2dp"/>
+            <Button android:id="@+id/btnNum9" style="@style/PillButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="9" android:layout_margin="2dp"/>
+            <Button android:id="@+id/btnDelete" style="@style/PillButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="CLEAR" android:layout_margin="2dp"/>
         </LinearLayout>
     </LinearLayout>
 
     <Button
         android:id="@+id/btnHint"
+        style="@style/PillButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/keypad"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="12dp"
         android:text="Use Hint" />
 
 </RelativeLayout>

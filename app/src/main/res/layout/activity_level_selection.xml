@@ -2,45 +2,320 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp">
 
+
     <TextView
+        android:text="SELECT MISSION"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select a Level"
-        android:textSize="24sp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_gravity="left"
+        android:layout_marginBottom="8dp"
+        android:textColor="#05e2f2"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        />
 
-    <Button
+    <LinearLayout
         android:id="@+id/btnLevel1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Level 1" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#dee8fa"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_margin="8dp">
 
-    <Button
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.1"
+                android:text="01"
+                android:textColor="#4954b8"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLvl1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Neon Spark"
+                android:textColor="@color/on_surface"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#040b4a"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_play_arrow"
+                android:contentDescription="Logout"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
         android:id="@+id/btnLevel2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Level 2" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#dee8fa"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_margin="8dp">
 
-    <Button
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.1"
+                android:text="02"
+                android:textColor="#4954b8"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLvl2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Neon Pulse"
+                android:textColor="@color/on_surface"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#040b4a"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_play_arrow"
+                android:contentDescription="Logout"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
         android:id="@+id/btnLevel3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Level 3" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#dee8fa"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_margin="8dp">
 
-    <Button
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.1"
+                android:text="03"
+                android:textColor="#4954b8"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLvl3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Neon Flow"
+                android:textColor="@color/on_surface"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#040b4a"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_play_arrow"
+                android:contentDescription="Logout"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/btnLevel4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Level 4" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#dee8fa"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_margin="8dp">
 
-    <Button
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.1"
+                android:text="04"
+                android:textColor="#4954b8"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLvl4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Neon Surge"
+                android:textColor="@color/on_surface"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#040b4a"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_play_arrow"
+                android:contentDescription="Logout"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/btnLevel5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Level 5" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#dee8fa"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_margin="8dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.1"
+                android:text="05"
+                android:textColor="#4954b8"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLvl5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Neon Core"
+                android:textColor="@color/on_surface"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#040b4a"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_play_arrow"
+                android:contentDescription="Logout"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

@@ -10,67 +10,353 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="24dp"
-        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_editor_absoluteX="0dp">
 
         <TextView
             android:id="@+id/tvWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:textSize="24sp"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="#207FCE"
+            android:textStyle="bold|italic"
+            android:fontFamily="sans-serif-medium"
+            android:shadowColor="#00BFFF"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="20"/>
 
         <Button
             android:id="@+id/btnTutorial"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:paddingVertical="12dp"
+            android:backgroundTint="#05e2f2"
             android:text="How to Play?"
-            android:layout_marginBottom="24dp"/>
+            android:textColor="#FFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            app:cornerRadius="24dp" />
 
-        <Button
-            android:id="@+id/btnEasy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Easy (5x5)" />
-
-        <Button
-            android:id="@+id/btnMedium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Medium (7x7)"
-            android:layout_marginTop="8dp"/>
-
-        <Button
-            android:id="@+id/btnHard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hard (9x8)"
-            android:layout_marginTop="8dp"/>
-
-        <Button
-            android:id="@+id/btnStats"
+        <TextView
+            android:text="SELECT MISSION"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="View Stats"
-            android:layout_marginTop="16dp" />
+            android:layout_gravity="left"
+            android:layout_marginBottom="8dp"
+            android:textColor="#05e2f2"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            />
 
-        <Button
-            android:id="@+id/btnLeaderboard"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View Leaderboard"
-            android:layout_marginTop="8dp" />
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#dee8fa"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:paddingHorizontal="30dp">
 
-        <Button
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="#acf2b1"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_easy"
+                    app:tint="#4CAF50" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.1"
+                    android:text="EASY"
+                    android:textColor="#4CAF50"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Neon Training"
+                    android:textColor="@color/on_surface"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnEasy"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="#acf2b1"
+                android:padding="50dp"
+                android:src="@drawable/ic_arrow"
+                app:tint="#4CAF50" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#dee8fa"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:paddingHorizontal="30dp">
+
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="#acd8f2"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_medium"
+                    app:tint="#2e6be6" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.1"
+                    android:text="MEDIUM"
+                    android:textColor="#2e6be6"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Static Storm"
+                    android:textColor="@color/on_surface"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnMedium"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="#acd8f2"
+                android:padding="50dp"
+                android:src="@drawable/ic_arrow"
+                app:tint="#2e6be6" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#dee8fa"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:layout_marginBottom="15dp"
+            android:paddingHorizontal="30dp">
+
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="#d9a7fa"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_hard"
+                    app:tint="#ac2ee6" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:letterSpacing="0.1"
+                    android:text="HARD"
+                    android:textColor="#ac2ee6"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kinetic Hell"
+                    android:textColor="@color/on_surface"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnHard"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="#d9a7fa"
+                android:padding="50dp"
+                android:src="@drawable/ic_arrow"
+                app:tint="#ac2ee6" />
+
+        </LinearLayout>
+
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:padding="8dp"
+           android:weightSum="2">
+
+
+           <LinearLayout
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:layout_marginEnd="4dp"
+
+               android:background="@drawable/rounded_bg"
+               android:backgroundTint="#dee8fa"
+
+               android:orientation="vertical"
+               android:gravity="center"
+
+               android:padding="16dp">
+
+               <ImageButton
+                   android:id="@+id/btnStats"
+                   android:layout_width="50dp"
+                   android:layout_height="50dp"
+                   android:background="@android:color/transparent"
+                   android:src="@drawable/ic_stats"
+                   app:tint="#6775f5"
+
+                   android:scaleType="fitCenter"/>
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="VIEW STATS"
+                   android:textStyle="bold"
+                   android:layout_marginTop="8dp"/>
+
+           </LinearLayout>
+
+           <LinearLayout
+               android:layout_width="0dp"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:layout_marginStart="4dp"
+
+               android:background="@drawable/rounded_bg"
+               android:backgroundTint="#dee8fa"
+
+               android:orientation="vertical"
+               android:gravity="center"
+
+               android:padding="16dp">
+
+               <ImageButton
+                   android:id="@+id/btnLeaderboard"
+                   android:layout_width="50dp"
+                   android:layout_height="50dp"
+                   android:background="@android:color/transparent"
+                   android:src="@drawable/ic_leaderboard"
+                   app:tint="#45ba97"
+
+                   android:scaleType="fitCenter"/>
+
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="VIEW LEADERBOARD"
+                   android:textStyle="bold"
+                   android:layout_marginTop="8dp"/>
+
+           </LinearLayout>
+       </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Logout"
-            android:layout_marginTop="32dp"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="10dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#dee8fa"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:layout_margin="8dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_login"
+                android:contentDescription="Logout"
+                app:tint="#e53935"
+                android:scaleType="fitCenter" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LOGOUT"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:gravity="center"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 

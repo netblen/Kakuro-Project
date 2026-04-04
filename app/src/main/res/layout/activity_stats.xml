@@ -2,71 +2,377 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="24dp"
+    android:background="#021317"
     android:gravity="center_horizontal">
 
     <TextView
         android:id="@+id/tvStatsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="32dp"
+
         android:text="Your Statistics"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="32dp" />
+        android:textColor="#05e2f2"
+        android:textSize="40sp"
+        android:textStyle="bold|italic"
 
-    <TextView
-        android:id="@+id/tvTotalWins"
+        android:shadowColor="#05e2f2"
+        android:shadowDx="5"
+        android:shadowDy="5"
+        android:shadowRadius="10"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Total Puzzles Solved: Loading..."
-        android:textSize="18sp"
-        android:layout_marginBottom="16dp" />
+        android:orientation="horizontal"
+        android:padding="10dp">
 
-    <TextView
-        android:id="@+id/tvTotalHints"
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="vertical"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#031e24"
+            android:padding="12dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_dotbg"
+                    app:tint="#28393d"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PUZZELS \n SOLVED"
+                    android:textStyle="bold"
+                    android:textColor="#97b6bd"
+                    android:textSize="13sp"
+                    android:translationY="4dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="10dp"/>
+
+                <TextView
+                    android:id="@+id/tvTotalWins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="142"
+                    android:textColor="#97b6bd"
+                    android:textStyle="bold"
+                    android:textSize="26sp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_gravity="bottom"/>
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#031e24"
+            android:padding="12dp">
+
+            <!-- Overlap section -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="end"
+                    android:src="@drawable/ic_lightbulb"
+                    app:tint="#28393d"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HINTS USED"
+                    android:textStyle="bold"
+                    android:textColor="#c28f93"
+                    android:textSize="13sp"
+                    android:translationY="4dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="10dp"/>
+
+                <TextView
+                    android:id="@+id/tvTotalHints"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="142"
+                    android:textColor="#97b6bd"
+                    android:textStyle="bold"
+                    android:textSize="26sp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_gravity="bottom"/>
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_timer"
+            app:tint="#c28f93"
+            android:layout_marginTop="10dp"
+
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="10dp"
+
+            android:text="   FASTEST TIMES  "
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#97b6bd"
+            />
+    </LinearLayout>
+
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Total Hints Used: Loading..."
-        android:textSize="18sp"
-        android:layout_marginBottom="32dp" />
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#031e24"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:paddingHorizontal="30dp">
 
-    <TextView
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#073945"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_easy"
+                app:tint="#97b6bd" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.1"
+                android:text="EASY MODE"
+                android:textColor="#97b6bd"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Level 1-5 fastest"
+                android:textColor="#4f747d"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvFastest5x5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--:--"
+            android:textColor="#97b6bd"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Fastest Times"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#031e24"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:paddingHorizontal="30dp">
 
-    <TextView
-        android:id="@+id/tvFastest5x5"
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#073945"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_medium"
+                app:tint="#97b6bd" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.1"
+                android:text="MEDIUM MODE"
+                android:textColor="#97b6bd"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Level 1-5 fastest"
+                android:textColor="#4f747d"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvFastest7x7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--:--"
+            android:textColor="#97b6bd"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Easy (5x5): --:--"
-        android:textSize="18sp"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#031e24"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:paddingHorizontal="30dp">
 
-    <TextView
-        android:id="@+id/tvFastest7x7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Medium (7x7): --:--"
-        android:textSize="18sp"
-        android:layout_marginBottom="12dp" />
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#073945"
+            android:gravity="center">
 
-    <TextView
-        android:id="@+id/tvFastest9x8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Hard (9x8): --:--"
-        android:textSize="18sp"
-        android:layout_marginBottom="40dp" />
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_hard"
+                app:tint="#97b6bd" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.1"
+                android:text="HARD MODE"
+                android:textColor="#97b6bd"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Level 1-5 fastest"
+                android:textColor="#4f747d"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvFastest9x8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="--:--"
+            android:textColor="#97b6bd"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/btnBackToMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Back to Menu" />
+        android:text="Back to Menu"
+
+        android:layout_gravity="center"
+
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20dp"
+
+        android:backgroundTint="#05e2f2"
+        />
+
 
 </LinearLayout>
