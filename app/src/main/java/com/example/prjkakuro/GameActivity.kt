@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.text.InputFilter
 import android.view.Gravity
-import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
 import android.widget.Chronometer
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -63,9 +63,52 @@ class GameActivity : AppCompatActivity() {
         updateHintButtonText()
         btnHint.setOnClickListener { useHint() }
 
+        findViewById<Button>(R.id.btnShowSolution).setOnClickListener { showSolution() }
+
         setupKeypad()
         setupBoard()
         renderBoard()
+    }
+
+    private fun showSolution() {
+        AlertDialog.Builder(this)
+            .setTitle("Show Solution?")
+            .setMessage("This will fill the board and end the game. You won't get a win recorded.")
+            .setPositiveButton("Yes") { _, _ ->
+                pauseTimer()
+                for (r in board.indices) {
+                    for (c in board[0].indices) {
+                        if (board[r][c].isWhiteCell) {
+                            board[r][c].currentValue = board[r][c].solutionValue
+                            board[r][c].isCorrect = true
+                            board[r][c].isConflict = false
+                        }
+                    }
+                }
+                updateCellViews()
+
+                // show the solution values
+                val numCols = board[0].size
+                for (i in 0 until gridLayout.childCount) {
+                    val view = gridLayout.getChildAt(i)
+                    if (view is EditText) {
+                        val r = i / numCols
+                        val c = i % numCols
+                        if (board[r][c].isWhiteCell) {
+                            view.setText(board[r][c].solutionValue.toString())
+                        }
+                    }
+                }
+                
+                Toast.makeText(this, "Solution revealed.", Toast.LENGTH_LONG).show()
+                
+                // not gonna let the users use the btns after revealing the solution
+                findViewById<View>(R.id.keypad).visibility = View.GONE
+                findViewById<Button>(R.id.btnShowSolution).isEnabled = false
+                btnHint.isEnabled = false
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     private fun pauseTimer() {
@@ -142,7 +185,6 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun recordMove(row: Int, col: Int, oldValue: Int, newValue: Int) {
-        // postcondition: instance of MoveHistory created and added to undoStack
         undoStack.addLast(MoveHistory(row, col, oldValue, newValue))
         redoStack.clear()
     }

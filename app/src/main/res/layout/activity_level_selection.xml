@@ -317,5 +317,67 @@
     </LinearLayout>
 
 
+    <LinearLayout
+        android:id="@+id/btnLevel6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/rounded_bg"
+        android:backgroundTint="#040b4a"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_margin="8dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.1"
+                android:text="06"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLvl6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Random Chaos"
+                android:textColor="#4954b8"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_bg"
+            android:backgroundTint="#dee8fa"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_play_arrow"
+                android:contentDescription="Logout"
+                android:scaleType="fitCenter"
+                app:tint="#4954b8" />
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+
 
 </LinearLayout>

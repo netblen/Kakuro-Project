@@ -17,25 +17,20 @@ class LevelSelectionActivity : AppCompatActivity() {
 
         gridSize = intent.getIntExtra("GRID_SIZE", 5)
 
-//        findViewById<Button>(R.id.btnLevel1).setOnClickListener { startGame(1) }
-//        findViewById<Button>(R.id.btnLevel2).setOnClickListener { startGame(2) }
-//        findViewById<Button>(R.id.btnLevel3).setOnClickListener { startGame(3) }
-//        findViewById<Button>(R.id.btnLevel4).setOnClickListener { startGame(4) }
-//        findViewById<Button>(R.id.btnLevel5).setOnClickListener { startGame(5) }
-
         findViewById<LinearLayout>(R.id.btnLevel1).setOnClickListener { startGame(1) }
         findViewById<LinearLayout>(R.id.btnLevel2).setOnClickListener { startGame(2) }
         findViewById<LinearLayout>(R.id.btnLevel3).setOnClickListener { startGame(3) }
         findViewById<LinearLayout>(R.id.btnLevel4).setOnClickListener { startGame(4) }
         findViewById<LinearLayout>(R.id.btnLevel5).setOnClickListener { startGame(5) }
+        
+
+        findViewById<LinearLayout>(R.id.btnLevel6).setOnClickListener { startGame(6) }
 
         findViewById<TextView>(R.id.tvLvl1).text = getLevelTitle(gridSize, 1)
         findViewById<TextView>(R.id.tvLvl2).text = getLevelTitle(gridSize, 2)
         findViewById<TextView>(R.id.tvLvl3).text = getLevelTitle(gridSize, 3)
         findViewById<TextView>(R.id.tvLvl4).text = getLevelTitle(gridSize, 4)
         findViewById<TextView>(R.id.tvLvl5).text = getLevelTitle(gridSize, 5)
-
-
     }
 
     private fun startGame(level: Int) {
@@ -45,8 +40,9 @@ class LevelSelectionActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-
     private fun getLevelTitle(difficulty: Int, level: Int): String {
+        if (level == 6) return "Random Chaos"
+        
         return when (difficulty) {
             5 -> when (level) {
                 1 -> "Neon Spark"
@@ -56,7 +52,6 @@ class LevelSelectionActivity : AppCompatActivity() {
                 5 -> "Neon Core"
                 else -> "Unknown"
             }
-
             7 -> when (level) {
                 1 -> "Static Flicker"
                 2 -> "Static Charge"
@@ -65,7 +60,6 @@ class LevelSelectionActivity : AppCompatActivity() {
                 5 -> "Static Overload"
                 else -> "Unknown"
             }
-
             9 -> when (level) {
                 1 -> "Kinetic Spark"
                 2 -> "Kinetic Rush"
@@ -74,10 +68,8 @@ class LevelSelectionActivity : AppCompatActivity() {
                 5 -> "Kinetic Chaos"
                 else -> "Unknown"
             }
-
             else -> "Level $level"
         }
     }
-
 
 }

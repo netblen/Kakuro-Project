@@ -1,8 +1,15 @@
 package com.example.prjkakuro
 
+import kotlin.random.Random
+
 class BoardSetup(private val level: Int) {
 
     fun setupBoard(gridSize: Int): Array<Array<KakuroCell>> {
+        // level 6 will be our "Random" level
+        if (level == 6) {
+            return generateRandomBoard(gridSize)
+        }
+
         val board = when (gridSize) {
             5 -> setup5x5Board()
             7 -> setup7x7Board()
@@ -10,37 +17,110 @@ class BoardSetup(private val level: Int) {
             else -> Array(gridSize) { Array(gridSize) { KakuroCell(isWhiteCell = true) } }
         }
 
-        // auto-solve board to populate solutionValue for hint system
         solveBoard(board)
+        return board
+    }
+
+    private fun generateRandomBoard(gridSize: Int): Array<Array<KakuroCell>> {
+        val rows = gridSize
+        val cols = if (gridSize == 9) 8 else gridSize
+        val board = Array(rows) { Array(cols) { KakuroCell(isWhiteCell = true) } }
+
+        //  Create a pattern of black cells
+        // focus on the black being in the first row and first column  clue cells
+        for (i in 0 until rows) board[i][0] = KakuroCell(isWhiteCell = false)
+        for (j in 0 until cols) board[0][j] = KakuroCell(isWhiteCell = false)
+
+        // Randomly add some more black cells to break up long runs
+        val random = Random(System.currentTimeMillis())
+        for (r in 1 until rows) {
+            for (c in 1 until cols) {
+                if (random.nextFloat() < 0.2) { // 20% chance of being a black cell
+                    board[r][c] = KakuroCell(isWhiteCell = false)
+                }
+            }
+        }
+
+        // make the white cells with a valid solution using backtracking
+        solveBoardRandomly(board)
+
+        // calculate clues based on the solution
+        for (r in 0 until rows) {
+            for (c in 0 until cols) {
+                if (!board[r][c].isWhiteCell) {
+                    board[r][c].horizontalSum = calculateHorizontalSum(board, r, c)
+                    board[r][c].verticalSum = calculateVerticalSum(board, r, c)
+                }
+            }
+        }
+
+        // clear board
+        for (r in 0 until rows) {
+            for (c in 0 until cols) {
+                if (board[r][c].isWhiteCell) {
+                    board[r][c].currentValue = 0
+                }
+            }
+        }
 
         return board
     }
 
-    // --- dynamic kakuro solver ---
+    private fun calculateHorizontalSum(board: Array<Array<KakuroCell>>, row: Int, col: Int): Int {
+        var sum = 0
+        var c = col + 1
+        while (c < board[0].size && board[row][c].isWhiteCell) {
+            sum += board[row][c].solutionValue
+            c++
+        }
+        return if (c == col + 1) 0 else sum // return sum if theres a col of white cells
+    }
+
+    private fun calculateVerticalSum(board: Array<Array<KakuroCell>>, row: Int, col: Int): Int {
+        var sum = 0
+        var r = row + 1
+        while (r < board.size && board[r][col].isWhiteCell) {
+            sum += board[r][col].solutionValue
+            r++
+        }
+        return if (r == row + 1) 0 else sum
+    }
+
+    private fun solveBoardRandomly(board: Array<Array<KakuroCell>>): Boolean {
+        for (r in board.indices) {
+            for (c in board[0].indices) {
+                if (board[r][c].isWhiteCell && board[r][c].solutionValue == 0) {
+                    val numbers = (1..9).shuffled()
+                    for (num in numbers) {
+                        if (isValidPlacement(board, r, c, num)) {
+                            board[r][c].solutionValue = num
+                            if (solveBoardRandomly(board)) return true
+                            board[r][c].solutionValue = 0
+                        }
+                    }
+                    return false
+                }
+            }
+        }
+        return true
+    }
 
     private fun solveBoard(board: Array<Array<KakuroCell>>): Boolean {
         for (r in board.indices) {
             for (c in board[0].indices) {
                 if (board[r][c].isWhiteCell && board[r][c].solutionValue == 0) {
-                    // try digits 1-9 for the empty cell
                     for (num in 1..9) {
                         if (isValidPlacement(board, r, c, num)) {
                             board[r][c].solutionValue = num
-
-                            // also try to solve the rest of the board
-                            if (solveBoard(board)) {
-                                return true
-                            }
-
-                            // if it fails, backtrack and try the next number
+                            if (solveBoard(board)) return true
                             board[r][c].solutionValue = 0
                         }
                     }
-                    return false // trigger backtracking if no numbers 1-9 fit
+                    return false
                 }
             }
         }
-        return true // board is completely filled and valid
+        return true
     }
 
     private fun isValidPlacement(board: Array<Array<KakuroCell>>, row: Int, col: Int, num: Int): Boolean {
@@ -51,18 +131,15 @@ class BoardSetup(private val level: Int) {
         var clueTarget = 0
         var currentSum = num
         var emptyCount = 0
-
-        // array to track dupes (1-9)
         val usedNumbers = BooleanArray(10)
         usedNumbers[num] = true
 
         if (isHorizontal) {
-            // traverse Left to find clue and add up left values
             var c = col - 1
             while (c >= 0 && board[row][c].isWhiteCell) {
                 val v = board[row][c].solutionValue
                 if (v != 0) {
-                    if (usedNumbers[v]) return false // dupe found
+                    if (usedNumbers[v]) return false
                     usedNumbers[v] = true
                     currentSum += v
                 } else {
@@ -70,15 +147,13 @@ class BoardSetup(private val level: Int) {
                 }
                 c--
             }
-            // assign the horizontal clue
             if (c >= 0 && !board[row][c].isWhiteCell) clueTarget = board[row][c].horizontalSum
 
-            // traverse Right to add up right values
             c = col + 1
             while (c < board[0].size && board[row][c].isWhiteCell) {
                 val v = board[row][c].solutionValue
                 if (v != 0) {
-                    if (usedNumbers[v]) return false // dupe found
+                    if (usedNumbers[v]) return false
                     usedNumbers[v] = true
                     currentSum += v
                 } else {
@@ -87,12 +162,11 @@ class BoardSetup(private val level: Int) {
                 c++
             }
         } else {
-            // traverse Up to find clue and add up top values
             var r = row - 1
             while (r >= 0 && board[r][col].isWhiteCell) {
                 val v = board[r][col].solutionValue
                 if (v != 0) {
-                    if (usedNumbers[v]) return false // Duplicate found
+                    if (usedNumbers[v]) return false
                     usedNumbers[v] = true
                     currentSum += v
                 } else {
@@ -100,15 +174,13 @@ class BoardSetup(private val level: Int) {
                 }
                 r--
             }
-            // assign the vertical clue
             if (r >= 0 && !board[r][col].isWhiteCell) clueTarget = board[r][col].verticalSum
 
-            // traverse down to add up bottom values
             r = row + 1
             while (r < board.size && board[r][col].isWhiteCell) {
                 val v = board[r][col].solutionValue
                 if (v != 0) {
-                    if (usedNumbers[v]) return false // dupe found
+                    if (usedNumbers[v]) return false
                     usedNumbers[v] = true
                     currentSum += v
                 } else {
@@ -118,16 +190,14 @@ class BoardSetup(private val level: Int) {
             }
         }
 
-        // validate the sum logic against the clue
         if (clueTarget > 0) {
-            if (emptyCount == 0 && currentSum != clueTarget) return false // finished run but wrong sum
-            if (emptyCount > 0 && currentSum >= clueTarget) return false // unfinished run but already exceeded target
+            if (emptyCount == 0 && currentSum != clueTarget) return false
+            if (emptyCount > 0 && currentSum >= clueTarget) return false
         }
 
         return true
     }
 
-    // --- board templates ---
 
     private fun setup5x5Board(): Array<Array<KakuroCell>> {
         val rawBoard = when (level) {

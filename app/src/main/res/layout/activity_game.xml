@@ -88,14 +88,29 @@
         </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnHint"
-        style="@style/PillButton"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/keypad"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="12dp"
-        android:text="Use Hint" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnHint"
+            style="@style/PillButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Use Hint"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnShowSolution"
+            style="@style/PillButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Solve" />
+
+    </LinearLayout>
 
 </RelativeLayout>
