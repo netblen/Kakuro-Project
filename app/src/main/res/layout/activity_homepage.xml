@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#12333b"
     tools:context=".HomePageActivity">
 
     <LinearLayout
@@ -12,52 +13,68 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="0dp">
+        android:padding="24dp">
 
-        <TextView
-            android:id="@+id/tvWelcome"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:textSize="24sp"
-            android:textColor="#207FCE"
-            android:textStyle="bold|italic"
-            android:fontFamily="sans-serif-medium"
-            android:shadowColor="#00BFFF"
-            android:shadowDx="5"
-            android:shadowDy="5"
-            android:shadowRadius="20"/>
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/tvWelcome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:fontFamily="sans-serif-medium"
+                android:shadowColor="#00BFFF"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                android:shadowRadius="1"
+                android:text="Welcome!"
+                android:textColor="#207FCE"
+                android:textSize="24sp"
+                android:textStyle="bold|italic" />
+
+            <ImageButton
+                android:id="@+id/btnThemeToggle"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Toggle Theme"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_change_theme"
+                app:tint="#00BFFF"
+                android:visibility="gone" />
+        </RelativeLayout>
 
         <Button
             android:id="@+id/btnTutorial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:paddingVertical="12dp"
             android:backgroundTint="#05e2f2"
+            android:gravity="center"
+            android:paddingVertical="12dp"
             android:text="How to Play?"
-            android:textColor="#FFFF"
+            android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:gravity="center"
             app:cornerRadius="24dp" />
 
         <TextView
-            android:text="SELECT MISSION"
+            android:id="@+id/tvSelectMission"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginBottom="8dp"
-            android:textColor="#05e2f2"
-            android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
-            />
+            android:text="SELECT MISSION"
+            android:textColor="#05e2f2"
+            android:textStyle="bold" />
 
         <LinearLayout
+            android:id="@+id/layoutEasy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
@@ -80,7 +97,6 @@
                     android:layout_height="28dp"
                     android:src="@drawable/ic_easy"
                     app:tint="#4CAF50" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -91,6 +107,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tvEasyLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:letterSpacing="0.1"
@@ -100,13 +117,13 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvEasyName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Neon Training"
                     android:textColor="@color/on_surface"
                     android:textSize="18sp"
                     android:textStyle="bold" />
-
             </LinearLayout>
 
             <ImageButton
@@ -118,11 +135,10 @@
                 android:padding="50dp"
                 android:src="@drawable/ic_arrow"
                 app:tint="#4CAF50" />
-
         </LinearLayout>
 
-
         <LinearLayout
+            android:id="@+id/layoutMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
@@ -145,7 +161,6 @@
                     android:layout_height="28dp"
                     android:src="@drawable/ic_medium"
                     app:tint="#2e6be6" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -156,6 +171,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tvMediumLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:letterSpacing="0.1"
@@ -165,13 +181,13 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvMediumName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Static Storm"
                     android:textColor="@color/on_surface"
                     android:textSize="18sp"
                     android:textStyle="bold" />
-
             </LinearLayout>
 
             <ImageButton
@@ -183,18 +199,18 @@
                 android:padding="50dp"
                 android:src="@drawable/ic_arrow"
                 app:tint="#2e6be6" />
-
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layoutHard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
             android:background="@drawable/rounded_bg"
             android:backgroundTint="#dee8fa"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="16dp"
-            android:layout_marginBottom="15dp"
             android:paddingHorizontal="30dp">
 
             <LinearLayout
@@ -209,7 +225,6 @@
                     android:layout_height="28dp"
                     android:src="@drawable/ic_hard"
                     app:tint="#ac2ee6" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -220,6 +235,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tvHardLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:letterSpacing="0.1"
@@ -229,13 +245,13 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvHardName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Kinetic Hell"
                     android:textColor="@color/on_surface"
                     android:textSize="18sp"
                     android:textStyle="bold" />
-
             </LinearLayout>
 
             <ImageButton
@@ -247,117 +263,106 @@
                 android:padding="50dp"
                 android:src="@drawable/ic_arrow"
                 app:tint="#ac2ee6" />
-
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:weightSum="2">
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal"
-           android:padding="8dp"
-           android:weightSum="2">
+            <LinearLayout
+                android:id="@+id/layoutStats"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="#dee8fa"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
 
+                <ImageButton
+                    android:id="@+id/btnStats"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_stats"
+                    app:tint="#6775f5" />
 
-           <LinearLayout
-               android:layout_width="0dp"
-               android:layout_height="wrap_content"
-               android:layout_weight="1"
-               android:layout_marginEnd="4dp"
+                <TextView
+                    android:id="@+id/tvStatsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="VIEW STATS"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-               android:background="@drawable/rounded_bg"
-               android:backgroundTint="#dee8fa"
+            <LinearLayout
+                android:id="@+id/layoutLeaderboard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_bg"
+                android:backgroundTint="#dee8fa"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-               android:orientation="vertical"
-               android:gravity="center"
+                <ImageButton
+                    android:id="@+id/btnLeaderboard"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@android:color/transparent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_leaderboard"
+                    app:tint="#45ba97" />
 
-               android:padding="16dp">
-
-               <ImageButton
-                   android:id="@+id/btnStats"
-                   android:layout_width="50dp"
-                   android:layout_height="50dp"
-                   android:background="@android:color/transparent"
-                   android:src="@drawable/ic_stats"
-                   app:tint="#6775f5"
-
-                   android:scaleType="fitCenter"/>
-
-               <TextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="VIEW STATS"
-                   android:textStyle="bold"
-                   android:layout_marginTop="8dp"/>
-
-           </LinearLayout>
-
-           <LinearLayout
-               android:layout_width="0dp"
-               android:layout_height="wrap_content"
-               android:layout_weight="1"
-               android:layout_marginStart="4dp"
-
-               android:background="@drawable/rounded_bg"
-               android:backgroundTint="#dee8fa"
-
-               android:orientation="vertical"
-               android:gravity="center"
-
-               android:padding="16dp">
-
-               <ImageButton
-                   android:id="@+id/btnLeaderboard"
-                   android:layout_width="50dp"
-                   android:layout_height="50dp"
-                   android:background="@android:color/transparent"
-                   android:src="@drawable/ic_leaderboard"
-                   app:tint="#45ba97"
-
-                   android:scaleType="fitCenter"/>
-
-               <TextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="VIEW LEADERBOARD"
-                   android:textStyle="bold"
-                   android:layout_marginTop="8dp"/>
-
-           </LinearLayout>
-       </LinearLayout>
+                <TextView
+                    android:id="@+id/tvLeaderboardLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="VIEW LEADERBOARD"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/btnLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="10dp"
+            android:layout_margin="8dp"
             android:background="@drawable/rounded_bg"
             android:backgroundTint="#dee8fa"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground"
-            android:layout_margin="8dp">
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_login"
                 android:contentDescription="Logout"
-                app:tint="#e53935"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_login"
+                app:tint="#e53935" />
 
             <TextView
+                android:id="@+id/tvLogoutLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LOGOUT"
-                android:textStyle="bold"
                 android:layout_marginTop="8dp"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:text="LOGOUT"
+                android:textStyle="bold" />
         </LinearLayout>
-
-
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

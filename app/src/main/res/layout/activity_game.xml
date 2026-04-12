@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gameMainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#052a33"
     android:padding="16dp">
-
+        <!--    android:background="#052a33"-->
     <Chronometer
         android:id="@+id/gameTimer"
         android:layout_width="wrap_content"
@@ -104,12 +104,6 @@
             android:text="Use Hint"
             android:layout_marginEnd="8dp"/>
 
-        <Button
-            android:id="@+id/btnShowSolution"
-            style="@style/PillButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Solve" />
 
     </LinearLayout>
 

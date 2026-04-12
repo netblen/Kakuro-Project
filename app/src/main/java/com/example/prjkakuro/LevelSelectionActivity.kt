@@ -10,20 +10,20 @@ import androidx.appcompat.app.AppCompatActivity
 class LevelSelectionActivity : AppCompatActivity() {
 
     private var gridSize: Int = 0
+    private var currentTheme: String = "dark"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_level_selection)
 
         gridSize = intent.getIntExtra("GRID_SIZE", 5)
+        currentTheme = intent.getStringExtra("THEME") ?: "dark"
 
         findViewById<LinearLayout>(R.id.btnLevel1).setOnClickListener { startGame(1) }
         findViewById<LinearLayout>(R.id.btnLevel2).setOnClickListener { startGame(2) }
         findViewById<LinearLayout>(R.id.btnLevel3).setOnClickListener { startGame(3) }
         findViewById<LinearLayout>(R.id.btnLevel4).setOnClickListener { startGame(4) }
         findViewById<LinearLayout>(R.id.btnLevel5).setOnClickListener { startGame(5) }
-        
-
         findViewById<LinearLayout>(R.id.btnLevel6).setOnClickListener { startGame(6) }
 
         findViewById<TextView>(R.id.tvLvl1).text = getLevelTitle(gridSize, 1)
@@ -37,6 +37,7 @@ class LevelSelectionActivity : AppCompatActivity() {
         val intent = Intent(this, GameActivity::class.java)
         intent.putExtra("GRID_SIZE", gridSize)
         intent.putExtra("LEVEL", level)
+        intent.putExtra("THEME", currentTheme) // Pass the theme forward
         startActivity(intent)
     }
 
@@ -71,5 +72,4 @@ class LevelSelectionActivity : AppCompatActivity() {
             else -> "Level $level"
         }
     }
-
 }

@@ -1,6 +1,7 @@
 package com.example.prjkakuro
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.os.SystemClock
@@ -10,7 +11,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.Chronometer
 import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +30,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var gridLayout: GridLayout
     private var gridSize: Int = 5
     private var level: Int = 1
+    private var currentTheme: String = "dark"
     private lateinit var board: Array<Array<KakuroCell>>
 
     private val undoStack = ArrayDeque<MoveHistory>()
@@ -42,74 +43,175 @@ class GameActivity : AppCompatActivity() {
     private var hintsRemaining: Int = 3
     private lateinit var btnHint: Button
 
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
         gridSize = intent.getIntExtra("GRID_SIZE", 5)
         level = intent.getIntExtra("LEVEL", 1)
+        currentTheme = intent.getStringExtra("THEME") ?: "dark"
 
         gridLayout = findViewById(R.id.kakuroGrid)
         gridLayout.columnCount = gridSize
         gridLayout.rowCount = gridSize
 
         timer = findViewById(R.id.gameTimer)
-        resumeTimer()
+        btnHint = findViewById(R.id.btnHint)
+
+        applyGameTheme(currentTheme)
 
         findViewById<Button>(R.id.btnUndo).setOnClickListener { undo() }
         findViewById<Button>(R.id.btnRedo).setOnClickListener { redo() }
-
-        btnHint = findViewById(R.id.btnHint)
+        
         updateHintButtonText()
         btnHint.setOnClickListener { useHint() }
 
-        findViewById<Button>(R.id.btnShowSolution).setOnClickListener { showSolution() }
 
         setupKeypad()
-        setupBoard()
-        renderBoard()
+        
+        if (level == 6) {
+            setupBoard()
+            renderBoard()
+            resumeTimer()
+        } else {
+            checkSavedGame()
+        }
     }
 
-    private fun showSolution() {
-        AlertDialog.Builder(this)
-            .setTitle("Show Solution?")
-            .setMessage("This will fill the board and end the game. You won't get a win recorded.")
-            .setPositiveButton("Yes") { _, _ ->
-                pauseTimer()
-                for (r in board.indices) {
-                    for (c in board[0].indices) {
-                        if (board[r][c].isWhiteCell) {
-                            board[r][c].currentValue = board[r][c].solutionValue
-                            board[r][c].isCorrect = true
-                            board[r][c].isConflict = false
-                        }
-                    }
-                }
-                updateCellViews()
+    private fun checkSavedGame() {
+        val uid = auth.currentUser?.uid ?: run {
+            setupBoard()
+            renderBoard()
+            resumeTimer()
+            return
+        }
 
-                // show the solution values
-                val numCols = board[0].size
-                for (i in 0 until gridLayout.childCount) {
-                    val view = gridLayout.getChildAt(i)
-                    if (view is EditText) {
-                        val r = i / numCols
-                        val c = i % numCols
-                        if (board[r][c].isWhiteCell) {
-                            view.setText(board[r][c].solutionValue.toString())
+        val gameId = "game_${gridSize}_${level}"
+        db.collection("Users").document(uid).collection("SavedGames").document(gameId).get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists()) {
+                    AlertDialog.Builder(this)
+                        .setTitle("Resume Game?")
+                        .setMessage("You have a saved game for this level. Would you like to resume it?")
+                        .setPositiveButton("Resume") { _, _ ->
+                            loadSavedGame(doc.data!!)
                         }
-                    }
+                        .setNegativeButton("New Game") { _, _ ->
+                            deleteSavedGame()
+                            setupBoard()
+                            renderBoard()
+                            resumeTimer()
+                        }
+                        .setCancelable(false)
+                        .show()
+                } else {
+                    setupBoard()
+                    renderBoard()
+                    resumeTimer()
                 }
-                
-                Toast.makeText(this, "Solution revealed.", Toast.LENGTH_LONG).show()
-                
-                // not gonna let the users use the btns after revealing the solution
-                findViewById<View>(R.id.keypad).visibility = View.GONE
-                findViewById<Button>(R.id.btnShowSolution).isEnabled = false
-                btnHint.isEnabled = false
             }
-            .setNegativeButton("No", null)
-            .show()
+            .addOnFailureListener {
+                setupBoard()
+                renderBoard()
+                resumeTimer()
+            }
     }
+
+    private fun loadSavedGame(data: Map<String, Any>) {
+        setupBoard()
+        
+        // Firestore doesn't support nested arrays, so we stored it as a flat list
+        val savedBoard = data["board"] as? List<Long> ?: return
+        timeWhenStopped = data["timer"] as? Long ?: 0L
+        hintsRemaining = (data["hints"] as? Long)?.toInt() ?: 3
+        
+        val numCols = board[0].size
+        for (i in savedBoard.indices) {
+            val r = i / numCols
+            val c = i % numCols
+            if (r < board.size && c < board[0].size && board[r][c].isWhiteCell) {
+                board[r][c].currentValue = savedBoard[i].toInt()
+            }
+        }
+        
+        renderBoard()
+        updateHintButtonText()
+        resumeTimer()
+        
+        // check everything again to see if its good
+        for (r in board.indices) {
+            for (c in board[0].indices) {
+                if (board[r][c].isWhiteCell && board[r][c].currentValue != 0) {
+                    validateRuns(r, c)
+                }
+            }
+        }
+        updateCellViews()
+    }
+
+    private fun saveGameState() {
+        if (level == 6) return
+        
+        val uid = auth.currentUser?.uid ?: return
+        val gameId = "game_${gridSize}_${level}"
+        
+        val currentTime = if (isTimerRunning) SystemClock.elapsedRealtime() - timer.base else timeWhenStopped
+        
+        // Flatten board to avoid "Nested arrays are not supported" error
+        val boardState = mutableListOf<Int>()
+        for (r in board.indices) {
+            for (c in board[0].indices) {
+                boardState.add(board[r][c].currentValue)
+            }
+        }
+
+        val gameState = hashMapOf(
+            "timer" to currentTime,
+            "hints" to hintsRemaining,
+            "board" to boardState,
+            "gridSize" to gridSize,
+            "level" to level
+        )
+
+        db.collection("Users").document(uid).collection("SavedGames").document(gameId)
+            .set(gameState)
+            .addOnFailureListener { e ->
+            }
+    }
+
+    private fun deleteSavedGame() {
+        if (level == 6) return
+        val uid = auth.currentUser?.uid ?: return
+        val gameId = "game_${gridSize}_${level}"
+        db.collection("Users").document(uid).collection("SavedGames").document(gameId).delete()
+    }
+
+    private fun applyGameTheme(theme: String) {
+        val isDark = theme == "dark"
+        val bgColor = if (isDark) Color.parseColor("#052a33") else Color.parseColor("#F5F5F5")
+        val timerTextColor = if (isDark) Color.parseColor("#05e2f2") else Color.BLACK
+        val buttonBgColor = if (isDark) Color.parseColor("#11181C") else Color.parseColor("#b3eaf2")
+        val buttonTextColor = if (isDark) Color.WHITE else Color.BLACK
+
+        findViewById<View>(android.R.id.content).setBackgroundColor(bgColor)
+        timer.setTextColor(timerTextColor)
+        
+        val buttons = listOf(
+            R.id.btnNum1, R.id.btnNum2, R.id.btnNum3, R.id.btnNum4, R.id.btnNum5,
+            R.id.btnNum6, R.id.btnNum7, R.id.btnNum8, R.id.btnNum9, R.id.btnDelete
+        )
+        
+        buttons.forEach { id ->
+            findViewById<Button>(id)?.let { btn ->
+                btn.backgroundTintList = ColorStateList.valueOf(buttonBgColor)
+                btn.setTextColor(buttonTextColor)
+            }
+        }
+    }
+
 
     private fun pauseTimer() {
         if (isTimerRunning) {
@@ -119,16 +221,19 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        pauseTimer()
+        saveGameState()
+    }
+
     private fun resumeTimer() {
         timer.base = SystemClock.elapsedRealtime() - timeWhenStopped
         timer.start()
         isTimerRunning = true
     }
 
-    override fun onPause() {
-        super.onPause()
-        pauseTimer()
-    }
+
 
     override fun onResume() {
         super.onResume()
@@ -136,6 +241,7 @@ class GameActivity : AppCompatActivity() {
             resumeTimer()
         }
     }
+
     private fun useHint() {
         if (hintsRemaining <= 0) return
 
@@ -158,6 +264,7 @@ class GameActivity : AppCompatActivity() {
 
             hintsRemaining--
             updateHintButtonText()
+            saveGameState()
             checkWinCondition()
         }
     }
@@ -169,8 +276,9 @@ class GameActivity : AppCompatActivity() {
     private fun onNumberClick(number: Int) {
         selectedCell?.let {
             val numCols = board[0].size
-            val row = it.tag as Int / numCols
-            val column = it.tag as Int % numCols
+            val tag = it.tag as? Int ?: return@let
+            val row = tag / numCols
+            val column = tag % numCols
             val cell = board[row][column]
 
             if (cell.currentValue != number) {
@@ -179,6 +287,7 @@ class GameActivity : AppCompatActivity() {
                 it.setText(number.toString())
                 validateRuns(row, column)
                 updateCellViews()
+                saveGameState()
                 checkWinCondition()
             }
         }
@@ -194,6 +303,7 @@ class GameActivity : AppCompatActivity() {
             val move = undoStack.removeLast()
             redoStack.addLast(move)
             applyMove(move.row, move.col, move.previousValue)
+            saveGameState()
         }
     }
 
@@ -202,6 +312,7 @@ class GameActivity : AppCompatActivity() {
             val move = redoStack.removeLast()
             undoStack.addLast(move)
             applyMove(move.row, move.col, move.newValue)
+            saveGameState()
         }
     }
 
@@ -254,7 +365,7 @@ class GameActivity : AppCompatActivity() {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     selectedCell = this
-                    setBackgroundColor(Color.LTGRAY)
+                    setBackgroundColor(if (currentTheme == "dark") Color.LTGRAY else Color.parseColor("#E0E0E0"))
                 } else {
                     updateCellViews()
                 }
@@ -264,7 +375,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun createClueCell(cell: KakuroCell): View {
         return if (cell.verticalSum == 0 && cell.horizontalSum == 0) {
-            View(this).apply { setBackgroundColor(Color.BLACK) }
+            View(this).apply { setBackgroundColor(if (currentTheme == "dark") Color.BLACK else Color.parseColor("#333333")) }
         } else {
             ClueCellView(this).apply { setSums(cell.verticalSum, cell.horizontalSum) }
         }
@@ -281,7 +392,7 @@ class GameActivity : AppCompatActivity() {
                 val color = when {
                     cell.isCorrect -> ContextCompat.getColor(this, R.color.correctGreen)
                     cell.isConflict -> ContextCompat.getColor(this, R.color.errorRed)
-                    else -> Color.WHITE
+                    else -> if (currentTheme == "dark") Color.WHITE else Color.parseColor("#FAFAFA")
                 }
                 if (selectedCell != view) view.setBackgroundColor(color)
             }
@@ -345,6 +456,7 @@ class GameActivity : AppCompatActivity() {
         val allCorrect = board.all { row -> row.all { !it.isWhiteCell || it.isCorrect } }
         if (allCorrect) {
             pauseTimer()
+            deleteSavedGame()
             val totalTime = SystemClock.elapsedRealtime() - timer.base
             val usedHints = 3 - hintsRemaining
             saveGameStats(totalTime, usedHints)
@@ -358,8 +470,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun saveGameStats(time: Long, hints: Int) {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val userRef = FirebaseFirestore.getInstance().collection("Users").document(uid)
+        val uid = auth.currentUser?.uid ?: return
+        val userRef = db.collection("Users").document(uid)
         userRef.get().addOnSuccessListener { doc ->
             val wins = (doc.getLong("totalWins") ?: 0) + 1
             val totalHints = (doc.getLong("totalHintsUsed") ?: 0) + hints
@@ -377,6 +489,7 @@ class GameActivity : AppCompatActivity() {
                 if (board[r][c].currentValue != 0) {
                     recordMove(r, c, board[r][c].currentValue, 0)
                     applyMove(r, c, 0)
+                    saveGameState()
                 }
             }
         }
