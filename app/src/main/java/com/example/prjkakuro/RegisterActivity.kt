@@ -12,7 +12,6 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
 
-        //variables
         val btnSignUp = findViewById<Button>(R.id.btnSignUp)
         val etUsername = findViewById<EditText>(R.id.etRegUsername)
         val etEmail = findViewById<EditText>(R.id.etRegEmail)
@@ -31,7 +30,7 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            //Checks if the username exists in the users collection of the db
+            //checks if the username exists in the users collection of the db
             //if not found, it creates a new account if not created will shows a error
             FirebaseFirestore.getInstance().collection("Users")
                 .whereEqualTo("username", user).get()
@@ -65,7 +64,7 @@ class RegisterActivity : AppCompatActivity() {
                             val intent = Intent(this, HomePageActivity::class.java)
                             intent.putExtra("USERNAME", username)
 
-                            intent.putExtra("IS_NEW_USER", true) //Mark as first login
+                            intent.putExtra("IS_NEW_USER", true) //mark as first login
                             startActivity(intent)
 
                             finish()

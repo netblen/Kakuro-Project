@@ -65,13 +65,13 @@ class GameActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnUndo).setOnClickListener { undo() }
         findViewById<Button>(R.id.btnRedo).setOnClickListener { redo() }
-        
+
         updateHintButtonText()
         btnHint.setOnClickListener { useHint() }
 
 
         setupKeypad()
-        
+
         if (level == 6) {
             setupBoard()
             renderBoard()
@@ -122,12 +122,10 @@ class GameActivity : AppCompatActivity() {
 
     private fun loadSavedGame(data: Map<String, Any>) {
         setupBoard()
-        
-        // Firestore doesn't support nested arrays, so we stored it as a flat list
         val savedBoard = data["board"] as? List<Long> ?: return
         timeWhenStopped = data["timer"] as? Long ?: 0L
         hintsRemaining = (data["hints"] as? Long)?.toInt() ?: 3
-        
+
         val numCols = board[0].size
         for (i in savedBoard.indices) {
             val r = i / numCols
@@ -136,12 +134,11 @@ class GameActivity : AppCompatActivity() {
                 board[r][c].currentValue = savedBoard[i].toInt()
             }
         }
-        
+
         renderBoard()
         updateHintButtonText()
         resumeTimer()
-        
-        // check everything again to see if its good
+
         for (r in board.indices) {
             for (c in board[0].indices) {
                 if (board[r][c].isWhiteCell && board[r][c].currentValue != 0) {
@@ -154,13 +151,10 @@ class GameActivity : AppCompatActivity() {
 
     private fun saveGameState() {
         if (level == 6) return
-        
         val uid = auth.currentUser?.uid ?: return
         val gameId = "game_${gridSize}_${level}"
-        
         val currentTime = if (isTimerRunning) SystemClock.elapsedRealtime() - timer.base else timeWhenStopped
-        
-        // Flatten board to avoid "Nested arrays are not supported" error
+
         val boardState = mutableListOf<Int>()
         for (r in board.indices) {
             for (c in board[0].indices) {
@@ -176,10 +170,7 @@ class GameActivity : AppCompatActivity() {
             "level" to level
         )
 
-        db.collection("Users").document(uid).collection("SavedGames").document(gameId)
-            .set(gameState)
-            .addOnFailureListener { e ->
-            }
+        db.collection("Users").document(uid).collection("SavedGames").document(gameId).set(gameState)
     }
 
     private fun deleteSavedGame() {
@@ -198,12 +189,12 @@ class GameActivity : AppCompatActivity() {
 
         findViewById<View>(android.R.id.content).setBackgroundColor(bgColor)
         timer.setTextColor(timerTextColor)
-        
+
         val buttons = listOf(
             R.id.btnNum1, R.id.btnNum2, R.id.btnNum3, R.id.btnNum4, R.id.btnNum5,
             R.id.btnNum6, R.id.btnNum7, R.id.btnNum8, R.id.btnNum9, R.id.btnDelete
         )
-        
+
         buttons.forEach { id ->
             findViewById<Button>(id)?.let { btn ->
                 btn.backgroundTintList = ColorStateList.valueOf(buttonBgColor)
@@ -221,19 +212,17 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        pauseTimer()
-        saveGameState()
-    }
-
     private fun resumeTimer() {
         timer.base = SystemClock.elapsedRealtime() - timeWhenStopped
         timer.start()
         isTimerRunning = true
     }
 
-
+    override fun onPause() {
+        super.onPause()
+        pauseTimer()
+        saveGameState()
+    }
 
     override fun onResume() {
         super.onResume()
@@ -244,7 +233,6 @@ class GameActivity : AppCompatActivity() {
 
     private fun useHint() {
         if (hintsRemaining <= 0) return
-
         val emptyCells = mutableListOf<Pair<Int, Int>>()
         for (r in board.indices) {
             for (c in board[0].indices) {
@@ -258,10 +246,8 @@ class GameActivity : AppCompatActivity() {
             val (hintRow, hintCol) = emptyCells.random()
             val cell = board[hintRow][hintCol]
             val correctValue = cell.solutionValue
-
             recordMove(hintRow, hintCol, 0, correctValue)
             applyMove(hintRow, hintCol, correctValue)
-
             hintsRemaining--
             updateHintButtonText()
             saveGameState()
@@ -336,7 +322,6 @@ class GameActivity : AppCompatActivity() {
         val numCols = board[0].size
         gridLayout.rowCount = numRows
         gridLayout.columnCount = numCols
-
         val cellSize = (resources.displayMetrics.widthPixels * 0.9 / numCols).toInt()
 
         for (r in 0 until numRows) {
@@ -408,7 +393,6 @@ class GameActivity : AppCompatActivity() {
         if (run.isEmpty()) return
         val values = run.map { board[it.first][it.second].currentValue }.filter { it != 0 }
         val sum = values.sum()
-
         val clueCell = findClueCell(run, isHorizontal)
         val target = if (isHorizontal) clueCell?.horizontalSum ?: 0 else clueCell?.verticalSum ?: 0
         val duplicates = values.size != values.toSet().size
@@ -472,10 +456,31 @@ class GameActivity : AppCompatActivity() {
     private fun saveGameStats(time: Long, hints: Int) {
         val uid = auth.currentUser?.uid ?: return
         val userRef = db.collection("Users").document(uid)
+
+        val difficultyField = when (gridSize) {
+            5 -> "fastestTime_5x5"
+            7 -> "fastestTime_7x7"
+            9 -> "fastestTime_9x8"
+            else -> null
+        }
+
         userRef.get().addOnSuccessListener { doc ->
             val wins = (doc.getLong("totalWins") ?: 0) + 1
             val totalHints = (doc.getLong("totalHintsUsed") ?: 0) + hints
-            userRef.update("totalWins", wins, "totalHintsUsed", totalHints)
+
+            val updates = mutableMapOf<String, Any>(
+                "totalWins" to wins,
+                "totalHintsUsed" to totalHints
+            )
+
+            if (difficultyField != null) {
+                val oldFastest = doc.getLong(difficultyField) ?: Long.MAX_VALUE
+                if (time < oldFastest) {
+                    updates[difficultyField] = time
+                }
+            }
+
+            userRef.update(updates)
         }
     }
 

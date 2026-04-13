@@ -38,13 +38,7 @@ class LeaderboardActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btnBackFromLeaderboard).setOnClickListener { finish() }
 
-//        val tvLeaderboard5x5 = findViewById<TextView>(R.id.tvLeaderboard5x5)
-//        val tvLeaderboard7x7 = findViewById<TextView>(R.id.tvLeaderboard7x7)
-//        val tvLeaderboard9x8 = findViewById<TextView>(R.id.tvLeaderboard9x8)
-//
-//        fetchTop10Text("5x5", tvLeaderboard5x5)
-//        fetchTop10Text("7x7", tvLeaderboard7x7)
-//        fetchTop10Text("9x8", tvLeaderboard9x8)
+
     }
 
     private fun updateSelector(selectedButton: Button) {
@@ -60,7 +54,7 @@ class LeaderboardActivity : AppCompatActivity() {
             }
         }
 
-        // Fetch data for the selected difficulty
+        // fetch data for the selected difficulty
         val gridSize = when (selectedButton.id) {
             R.id.btnEasy -> "5x5"
             R.id.btnMedium -> "7x7"
@@ -96,38 +90,5 @@ class LeaderboardActivity : AppCompatActivity() {
             }
     }
 
-    private fun fetchTop10Text(gridSize: String, targetTextView: TextView) {
-        val timeField = "fastestTime_$gridSize"
-        val db = FirebaseFirestore.getInstance()
 
-        db.collection("Users")
-            .orderBy(timeField, Query.Direction.ASCENDING)
-            .limit(10)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (documents.isEmpty) {
-                    targetTextView.text = "No scores yet."
-                    return@addOnSuccessListener
-                }
-
-                val sb = StringBuilder()
-                var rank = 1
-                for (doc in documents) {
-                    val username = doc.getString("username") ?: "Unknown Player"
-                    val timeInMillis = doc.getLong(timeField) ?: 0L
-                    if (timeInMillis > 0) {
-                        sb.append("$rank. $username - ${formatTime(timeInMillis)}\n")
-                        rank++
-                    }
-                }
-                targetTextView.text = if (sb.isEmpty()) "No scores yet." else sb.toString()
-            }
-    }
-
-    private fun formatTime(millis: Long): String {
-        if (millis <= 0L) return "--:--"
-        val minutes = TimeUnit.MILLISECONDS.toMinutes(millis)
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(minutes)
-        return String.format("%02d:%02d", minutes, seconds)
-    }
 }

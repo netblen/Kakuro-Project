@@ -37,7 +37,7 @@ class LevelSelectionActivity : AppCompatActivity() {
         val intent = Intent(this, GameActivity::class.java)
         intent.putExtra("GRID_SIZE", gridSize)
         intent.putExtra("LEVEL", level)
-        intent.putExtra("THEME", currentTheme) // Pass the theme forward
+        intent.putExtra("THEME", currentTheme) // pass the theme forward
         startActivity(intent)
     }
 
